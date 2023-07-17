@@ -104,7 +104,9 @@ def _get_file_extension(filename):
         full_filename = filename + ext
         if os.path.isfile(full_filename):
             return ext
-    print(f"Warning: File {filename} with extensions {possible_extensions} not found.")
+    print(
+        f"Warning: No file with extensions {possible_extensions} was not found for {filename}."
+    )
     return None
 
 
@@ -119,27 +121,40 @@ def _read_file(filename, extension):
 
 
 def get_qc_data(filtered_qc_info):
-    # Add qc-file column based on 'results' and 'plate_barcode' columns
+    # Add qc_file column based on 'results' and 'plate_barcode' columns
     filtered_qc_info = filtered_qc_info.with_columns(
-        (pl.col("results") + "qcRAW_images_" + pl.col("plate_barcode")).alias("qc-file")
+        (pl.col("results") + "qcRAW_images_" + pl.col("plate_barcode")).alias("qc_file")
     )
-    print(
-        f"\n{'_'*50}\nQuality control data of {filtered_qc_info.height} plates imported:\n"
-    )
+    print("\n")
     # Read and process all the files in a list, skipping files not found
     dfs = []
     for row in filtered_qc_info.iter_rows(named=True):
-        ext = _get_file_extension(row["qc-file"])
-        print(f"\t{row['qc-file']}{ext}")
+        ext = _get_file_extension(row["qc_file"])
         if ext is not None:
-            df = _read_file(row["qc-file"], ext)
+            df = _read_file(row["qc_file"], ext)
             df = df.with_columns(
                 pl.lit(row["plate_acq_id"]).alias("Metadata_AcqID"),
                 pl.lit(row["plate_barcode"]).alias("Metadata_Barcode"),
             )
             dfs.append(df)
+            print(f"Successfully imported {df.shape}: {row['qc_file']}{ext}")
+    print(f"\n{'_'*50}\nQuality control data of {len(dfs)} plates imported!\n")
     # Concatenate all the dataframes at once and return it
-    return pl.concat(dfs, how="vertical")
+    return (
+        pl.concat(dfs, how="vertical")
+        .with_columns(
+            (
+                pl.col("Metadata_AcqID").cast(pl.Utf8)
+                + "_"
+                + pl.col("Metadata_Well")
+                + "_"
+                + pl.col("Metadata_Site").cast(pl.Utf8)
+            ).alias("ImageID")
+        )
+        .sort(["Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageID"])
+        if dfs
+        else None
+    )
 
 
 class ExperimentData:
@@ -159,3 +174,12 @@ class ExperimentData:
         self.plate_acq_name = sorted(self.qc_info["plate_acq_name"].unique().to_list())
         self.plate_acq_id = sorted(self.qc_info["plate_acq_id"].unique().to_list())
         self.analysis_id = sorted(self.qc_info["analysis_id"].unique().to_list())
+        self.plate_wells = (
+            self.qc_data.select("Metadata_Well")
+            .unique()
+            .sort(by="Metadata_Well")
+            .to_series()
+            .to_list()
+        )
+        self.plate_rows = sorted(list({w[0] for w in self.plate_wells}))
+        self.plate_columns = sorted(list({w[1:] for w in self.plate_wells}))
