@@ -110,17 +110,28 @@ def _get_file_extension(filename):
     return None
 
 
+import polars as pl
+
+
 def _read_file(filename, extension):
     """Helper function to read file based on its extension"""
     if extension == ".parquet":
-        return pl.read_parquet(filename + extension)
+        df = pl.read_parquet(filename + extension)
     elif extension in [".csv", ".tsv"]:
         delimiter = "," if extension == ".csv" else "\t"
-        return pl.read_csv(filename + extension, separator=delimiter)
-    return None
+        df = pl.read_csv(filename + extension, separator=delimiter)
+    else:
+        return None
+    # Change column type to float32 if all values are null (unless in some case it changes to str)
+    for name in df.columns:
+        if df[name].is_null().sum() == len(df[name]):
+            df = df.with_columns(df[name].cast(pl.Float32))
+    return df
 
 
-def get_qc_data(filtered_qc_info):
+def get_qc_data(
+    filtered_qc_info: pl.DataFrame, force_merging_columns: Union[bool, str] = False
+):
     # Add qc_file column based on 'results' and 'plate_barcode' columns
     filtered_qc_info = filtered_qc_info.with_columns(
         (pl.col("results") + "qcRAW_images_" + pl.col("plate_barcode")).alias("qc_file")
@@ -136,12 +147,36 @@ def get_qc_data(filtered_qc_info):
                 pl.lit(row["plate_acq_id"]).alias("Metadata_AcqID"),
                 pl.lit(row["plate_barcode"]).alias("Metadata_Barcode"),
             )
+            # Cast all numerical f64 columns to f32
+            for name, dtype in zip(df.columns, df.dtypes):
+                if dtype == pl.Float64:
+                    df = df.with_columns(pl.col(name).cast(pl.Float32))
+                elif dtype == pl.Int64:
+                    df = df.with_columns(pl.col(name).cast(pl.Int32))
             dfs.append(df)
             print(f"Successfully imported {df.shape}: {row['qc_file']}{ext}")
+
+    if force_merging_columns == "keep":
+        concat_method = "diagonal"  # keep all columns and fill missing values with null
+    elif force_merging_columns == "drop":
+        concat_method = (
+            "vertical"  # merge dfs horizontally, only keeps matching columns
+        )
+        common_columns = set(dfs[0].columns)
+        for df in dfs[1:]:
+            common_columns.intersection_update(df.columns)
+        dfs = [df.select(sorted(common_columns)) for df in dfs]
+    else:
+        # Check if all dataframes have the same shape, if not print a message
+        if len({df.shape[1] for df in dfs}) > 1:
+            print("\nDataframes have different shapes and cannot be stacked together!")
+            return None
+        concat_method = "vertical"  # standard vertical concatenation
+
     print(f"\n{'_'*50}\nQuality control data of {len(dfs)} plates imported!\n")
     # Concatenate all the dataframes at once and return it
     return (
-        pl.concat(dfs, how="vertical")
+        pl.concat(dfs, how=concat_method)
         .with_columns(
             (
                 pl.col("Metadata_AcqID").cast(pl.Utf8)
@@ -163,10 +198,13 @@ class ExperimentData:
         name: str,
         drop_replication: Union[str, List[int]] = "Auto",
         keep_replication: Union[str, List[int]] = "None",
+        force_merging_columns: Union[bool, str] = False,
         filter: dict = None,
     ) -> None:
         self.qc_info = get_qc_info(name, drop_replication, keep_replication, filter)
-        self.qc_data = get_qc_data(self.qc_info)
+        self.qc_data = get_qc_data(
+            self.qc_info, force_merging_columns=force_merging_columns
+        )
         self.project = sorted(self.qc_info["project"].unique().to_list())
         self.pipeline_name = sorted(self.qc_info["pipeline_name"].unique().to_list())
         self.analysis_date = sorted(self.qc_info["analysis_date"].unique().to_list())
@@ -174,12 +212,13 @@ class ExperimentData:
         self.plate_acq_name = sorted(self.qc_info["plate_acq_name"].unique().to_list())
         self.plate_acq_id = sorted(self.qc_info["plate_acq_id"].unique().to_list())
         self.analysis_id = sorted(self.qc_info["analysis_id"].unique().to_list())
-        self.plate_wells = (
-            self.qc_data.select("Metadata_Well")
-            .unique()
-            .sort(by="Metadata_Well")
-            .to_series()
-            .to_list()
-        )
-        self.plate_rows = sorted(list({w[0] for w in self.plate_wells}))
-        self.plate_columns = sorted(list({w[1:] for w in self.plate_wells}))
+        if self.qc_data is not None:
+            self.plate_wells = (
+                self.qc_data.select("Metadata_Well")
+                .unique()
+                .sort(by="Metadata_Well")
+                .to_series()
+                .to_list()
+            )
+            self.plate_rows = sorted(list({w[0] for w in self.plate_wells}))
+            self.plate_columns = sorted(list({w[1:] for w in self.plate_wells}))
