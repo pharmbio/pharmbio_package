@@ -1,6 +1,7 @@
 import os
 import polars as pl
-from typing import Union, List
+from typing import Union, Tuple, Literal, Set, List, Dict
+from .qc import flag_outliers, get_qc_module, get_qc_data_dict, get_channels
 
 DB_URI = "postgresql://pharmbio_readonly:readonly@imagedb-pg-postgresql.services.svc.cluster.local/imagedb"
 
@@ -222,3 +223,53 @@ class ExperimentData:
             )
             self.plate_rows = sorted(list({w[0] for w in self.plate_wells}))
             self.plate_columns = sorted(list({w[1:] for w in self.plate_wells}))
+            self.qc_module = get_qc_module(self.qc_data)
+
+    def flag_it(
+        self,
+        module_to_keep: Set[str] = None,
+        module_to_drop: Set[str] = None,
+        method: Literal["SD", "IQR"] = "SD",
+        IQR_normalization: bool = True,
+        normalization: Literal["zscore", "minmax"] = "zscore",
+        sd_step_dict: Dict[str, Tuple[float, float]] = None,
+        default_sd_step: Tuple[float, float] = (-4.5, 4.5),
+        quantile_limit: float = 0.25,
+        multiplier: float = 1.5,
+    ):
+        return flag_outliers(
+            self.qc_data,
+            module_to_keep,
+            module_to_drop,
+            method,
+            IQR_normalization,
+            normalization,
+            sd_step_dict,
+            default_sd_step,
+            quantile_limit,
+            multiplier,
+        )
+
+    def qc_data_dict(
+        self,
+        module_to_keep: Set[str] = None,
+        module_to_drop: Set[str] = None,
+    ):
+        return get_qc_data_dict(
+            self.qc_data,
+            module_to_keep,
+            module_to_drop,
+        )
+
+    def channels(
+        self,
+        qc_module_list: List[str] = None,
+    ):
+        d = get_channels(self.qc_data, qc_module_list)
+        for module, data in d.items():
+            print(module)
+            print("  Channels:", data["channels"])
+            if data["sub_channels"] != []:
+                print("  Sub-channels:", data["sub_channels"])
+            print()
+        return d

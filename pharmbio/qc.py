@@ -1,3 +1,4 @@
+from sys import displayhook
 import polars as pl
 import pandas as pd
 from collections import defaultdict
@@ -107,7 +108,7 @@ def flag_outliers(
     module_to_keep: Set[str] = None,
     module_to_drop: Set[str] = None,
     method: Literal["SD", "IQR"] = "SD",
-    IQR_normalization: bool = False,
+    IQR_normalization: bool = True,
     normalization: Literal["zscore", "minmax"] = "zscore",
     sd_step_dict: Dict[str, Tuple[float, float]] = None,
     default_sd_step: Tuple[float, float] = (-4.5, 4.5),
@@ -130,10 +131,11 @@ def flag_outliers(
 
     if method == "SD":
         outlier_prefix = "OutlierSD_"
-        sd_step_dict = defaultdict(lambda: default_sd_step)
+        all_sd_step_dict = defaultdict(lambda: default_sd_step)
 
-        for key, value in sd_step_dict.items():
-            sd_step_dict[key] = value
+        if sd_step_dict:
+            for key, value in sd_step_dict.items():
+                all_sd_step_dict[key] = value
 
         for image_quality_name in module_list:
             # Get the current dataframe from the dictionary
@@ -145,7 +147,7 @@ def flag_outliers(
             )
 
             # Get the lower and upper treshold for the current image_quality_name
-            lower_threshold, upper_threshold = sd_step_dict[image_quality_name]
+            lower_threshold, upper_threshold = all_sd_step_dict[image_quality_name]
 
             # Create a new flag
             new_flag_scaled = f"{outlier_prefix}{image_quality_name}_{lower_threshold}_{upper_threshold}"
@@ -212,5 +214,11 @@ def flag_outliers(
 
     else:
         raise ValueError("Method must be either 'zscore' or 'IQR'")
-    
+
+    # Display the number of flagged image based on each quality module'
+    outlier_flaged_columns = [
+        col for col in flagged_qc_data.columns if col.startswith(outlier_prefix)
+    ]
+    displayhook(flagged_qc_data.select(outlier_flaged_columns + ["outlier_flag"]).sum())
+
     return flagged_qc_data
