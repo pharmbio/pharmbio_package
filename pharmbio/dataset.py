@@ -2,6 +2,7 @@ import os
 import polars as pl
 from typing import Union, Tuple, Literal, Set, List, Dict
 from .qc import flag_outliers, get_qc_module, get_qc_data_dict, get_channels
+from .vs import qc_lineplot, plate_heatmap, COLORS
 
 DB_URI = "postgresql://pharmbio_readonly:readonly@imagedb-pg-postgresql.services.svc.cluster.local/imagedb"
 
@@ -207,6 +208,7 @@ class ExperimentData:
             self.qc_info, force_merging_columns=force_merging_columns
         )
         self.project = sorted(self.qc_info["project"].unique().to_list())
+        self.project_name = self.project[0] if len(self.project) == 1 else None
         self.pipeline_name = sorted(self.qc_info["pipeline_name"].unique().to_list())
         self.analysis_date = sorted(self.qc_info["analysis_date"].unique().to_list())
         self.plate_barcode = sorted(self.qc_info["plate_barcode"].unique().to_list())
@@ -273,3 +275,43 @@ class ExperimentData:
                 print("  Sub-channels:", data["sub_channels"])
             print()
         return d
+
+    def plate_heatmap(
+        self,
+        plate_names: List[str] = None,
+        subplot_num_columns: int = 2,
+        plot_size: int = 400,
+        measurement: str = "Count_nuclei",
+    ):
+        if not plate_names:
+            plate_names = self.plate_barcode
+        return plate_heatmap(
+            self.qc_data,
+            plate_names,
+            subplot_num_columns,
+            plot_size,
+            measurement,
+        )
+
+    def qc_lineplot(
+        self,
+        qc_module_to_plot: Set[str] = None,
+        title: str = None,
+        plot_size: int = 1400,
+        normalization: bool = True,
+        normalization_method: Literal["zscore", "minmax"] = "zscore",
+        y_axis_range: Tuple = (-5, 5),
+        colors: List[str] = COLORS,
+    ):
+        if not title:
+            title = self.project_name
+        return qc_lineplot(
+            self.qc_data,
+            qc_module_to_plot,
+            title,
+            plot_size,
+            normalization,
+            normalization_method,
+            y_axis_range,
+            colors,
+        )

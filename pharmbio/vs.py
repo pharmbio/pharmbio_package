@@ -2,8 +2,15 @@ import polars as pl
 import pandas as pd
 import plotly.figure_factory as ff
 import plotly.subplots as sp
+import plotly.graph_objects as go
+import plotly.express as px
 import numpy as np
-from typing import Union, List, Dict
+from collections import defaultdict
+from typing import Union, Literal, Tuple, Set, List, Dict
+from .qc import get_channels, get_qc_data_dict, DEFAULT_QC_MODULES
+from .util import normalize_df
+
+COLORS = px.colors.qualitative.Set1
 
 
 def plate_heatmap(
@@ -12,11 +19,13 @@ def plate_heatmap(
     subplot_num_columns: int = 2,
     plot_size: int = 400,
     measurement: str = "Count_nuclei",
-    plate_well_columns: Dict[str, str] = {
-        "plates": "Metadata_Barcode",
-        "wells": "Metadata_Well",
-    },
+    plate_well_columns: Dict[str, str] = None,
 ):
+    if plate_well_columns is None:
+        plate_well_columns = {
+            "plates": "Metadata_Barcode",
+            "wells": "Metadata_Well",
+        }
     if isinstance(df, pd.DataFrame):
         df = pl.from_pandas(df)
 
@@ -117,3 +126,159 @@ def plate_heatmap(
         width=plot_size * 1.425 * subplot_num_columns,
     )
     fig.show()
+
+
+def _lineplot(
+    data_frames: pl.DataFrame,
+    colors: List[str],
+    title: str,
+    plot_size: int = 1400,
+    normalization: bool = True,
+    normalization_method: Literal["zscore", "minmax"] = "zscore",
+    y_axis_range: Tuple = (-5, 5),
+):
+    fig = sp.make_subplots(
+        rows=len(data_frames),
+        cols=1,
+        subplot_titles=[df[0] for df in data_frames],
+        x_title="Plates",
+    )
+
+    for x in range(len(data_frames)):
+        _, channel_names, raw_data = data_frames[x]
+        CurrentDataFrame = (
+            normalize_df(raw_data, method=normalization_method)
+            if normalization
+            else raw_data
+        )
+
+        min_val = CurrentDataFrame.min().to_numpy().min()  # minimum of all columns
+        max_val = CurrentDataFrame.max().to_numpy().max()  # maximum of all columns
+        y_axis_range = y_axis_range if normalization else (min_val, max_val)
+
+        for i, column in enumerate(CurrentDataFrame.columns):
+            channel_name = channel_names[i]
+            show_in_legend = x == 0
+
+            fig.add_trace(
+                go.Scatter(
+                    x=[str(j) for j in range(CurrentDataFrame.height)],
+                    y=CurrentDataFrame[column],
+                    mode="lines",
+                    line=dict(width=0.5, color=colors[i % len(colors)]),
+                    showlegend=False,
+                    name=""
+                    if show_in_legend
+                    else channel_name,  # get the legend just for the first row
+                    legendgroup=channel_name,
+                ),
+                row=x + 1,
+                col=1,
+            )
+
+        fig.update_xaxes(
+            range=[0, CurrentDataFrame.height], showticklabels=False, row=x + 1, col=1
+        )
+        fig.update_yaxes(range=y_axis_range, row=x + 1, col=1)
+
+        fig.add_shape(
+            type="line",
+            xref="x",
+            yref="paper",
+            x0=CurrentDataFrame.height / 2,
+            y0=y_axis_range[0],
+            x1=CurrentDataFrame.height / 2,
+            y1=y_axis_range[1],
+            line=dict(
+                color="Black",
+                width=1,
+                dash="dashdot",
+            ),
+            row=x + 1,
+            col=1,
+        )
+
+    # Dummy traces for the legend
+    for i, channel_name in enumerate(channel_names):
+        fig.add_trace(
+            go.Scatter(
+                x=[None],  # these traces won't appear
+                y=[None],
+                mode="lines",
+                line=dict(
+                    width=3, color=colors[i % len(colors)]
+                ),  # this will be the width in the legend
+                legendgroup=channel_name,
+                name=channel_name,  # this will be the name in the legend
+            ),
+        )
+
+    # Add main title
+    fig.update_layout(
+        height=1.8 * (len(data_frames) + 1) * 100,
+        title_text=title,
+        title_x=0.1,
+        width=plot_size,
+    )
+
+    fig.show()
+
+
+def qc_lineplot(
+    df: Union[pl.DataFrame, pd.DataFrame],
+    qc_module_to_plot: Set[str] = None,
+    title: str = "Unnamed",
+    plot_size: int = 1400,
+    normalization: bool = True,
+    normalization_method: Literal["zscore", "minmax"] = "zscore",
+    y_axis_range: Tuple = (-5, 5),
+    colors: List[str] = COLORS,
+):
+    if isinstance(df, pd.DataFrame):
+        df = pl.from_pandas(df)
+
+    if not qc_module_to_plot:
+        qc_module_to_plot = DEFAULT_QC_MODULES
+
+    title = f"{title} scaled" if normalization else f"{title} raw data"
+    image_quality_measures = sorted(list(qc_module_to_plot))
+    data_frame_dictionary = get_qc_data_dict(df, module_to_keep=qc_module_to_plot)
+    channel_dict = get_channels(df, qc_module_list=image_quality_measures)
+
+    channel_data_frames = defaultdict(list)
+    subchannel_data_frames = defaultdict(list)
+
+    for i in image_quality_measures:
+        if channel_dict[i]["sub_channels"] != []:
+            channel_names = tuple(sorted(channel_dict[i]["sub_channels"]))
+            subchannel_data_frames[channel_names].append(
+                (i, channel_dict[i]["sub_channels"], data_frame_dictionary.get(i))
+            )
+        else:
+            channel_names = tuple(sorted(channel_dict[i]["channels"]))
+            channel_data_frames[channel_names].append(
+                (i, channel_dict[i]["channels"], data_frame_dictionary.get(i))
+            )
+
+    # Then, create figures for each group of data frames
+    for data_frames in channel_data_frames.values():
+        _lineplot(
+            data_frames,
+            colors=colors,
+            title=title,
+            plot_size=plot_size,
+            normalization=normalization,
+            normalization_method=normalization_method,
+            y_axis_range=y_axis_range,
+        )
+
+    for data_frames in subchannel_data_frames.values():
+        _lineplot(
+            data_frames,
+            colors=colors,
+            title=title,
+            plot_size=plot_size,
+            normalization=normalization,
+            normalization_method=normalization_method,
+            y_axis_range=y_axis_range,
+        )

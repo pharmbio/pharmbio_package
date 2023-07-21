@@ -7,6 +7,15 @@ import re
 from .util import normalize_df
 
 
+DEFAULT_QC_MODULES = {
+        "FocusScore",
+        "MaxIntensity",
+        "MeanIntensity",
+        "PowerLogLogSlope",
+        "StdIntensity",
+    }
+
+
 def get_qc_module(qc_data: Union[pl.DataFrame, pd.DataFrame]):
     # Collect columns related to image quality
     image_quality_cols = [col for col in qc_data.columns if "ImageQuality_" in col]
@@ -26,13 +35,7 @@ def get_qc_data_dict(
     if isinstance(qc_data, pd.DataFrame):
         qc_data = pl.from_pandas(qc_data)
 
-    default_module_to_keep = {
-        "FocusScore",
-        "MaxIntensity",
-        "MeanIntensity",
-        "PowerLogLogSlope",
-        "StdIntensity",
-    }
+    default_module_to_keep = DEFAULT_QC_MODULES
 
     # If both are None, use default
     if not module_to_keep and not module_to_drop:
