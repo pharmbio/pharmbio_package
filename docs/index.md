@@ -1,17 +1,27 @@
-# Welcome to MkDocs
+# pharmbio (Python package)
+A Python package automating routine pharmaceutical bioinformatics laboratory analyses and quality control checks.
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+This is a Python package for interacting with Pharmbio databases. 
 
-## Commands
+## Installation
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+You can install this package from PyPI:
 
-## Project layout
+```sh
+pip install pharmbio
+```
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+## Usage
+
+Here's an example of how you can use this package:
+
+```py
+from pharmbio.dataset import QC
+
+experiment = QC(
+    name="experiment_name",
+    drop_replication="Auto",
+    keep_replication="None",
+    filter=None,
+)
+```

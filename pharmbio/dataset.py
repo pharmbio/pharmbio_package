@@ -1,5 +1,6 @@
 import os
 import polars as pl
+from tqdm.notebook import tqdm
 from typing import Union, Tuple, Literal, Set, List, Dict
 from .qc import flag_outliers, get_qc_module, get_qc_data_dict, get_channels
 from .vs import qc_lineplot, plate_heatmap, COLORS
@@ -112,9 +113,6 @@ def _get_file_extension(filename):
     return None
 
 
-import polars as pl
-
-
 def _read_file(filename, extension):
     """Helper function to read file based on its extension"""
     if extension == ".parquet":
@@ -194,7 +192,7 @@ def get_qc_data(
     )
 
 
-class ExperimentData:
+class QC:
     def __init__(
         self,
         name: str,
@@ -203,21 +201,21 @@ class ExperimentData:
         force_merging_columns: Union[bool, str] = False,
         filter: dict = None,
     ) -> None:
-        self.qc_info = get_qc_info(name, drop_replication, keep_replication, filter)
-        self.qc_data = get_qc_data(
-            self.qc_info, force_merging_columns=force_merging_columns
+        self.info = get_qc_info(name, drop_replication, keep_replication, filter)
+        self.df = get_qc_data(
+            self.info, force_merging_columns=force_merging_columns
         )
-        self.project = sorted(self.qc_info["project"].unique().to_list())
+        self.project = sorted(self.info["project"].unique().to_list())
         self.project_name = self.project[0] if len(self.project) == 1 else None
-        self.pipeline_name = sorted(self.qc_info["pipeline_name"].unique().to_list())
-        self.analysis_date = sorted(self.qc_info["analysis_date"].unique().to_list())
-        self.plate_barcode = sorted(self.qc_info["plate_barcode"].unique().to_list())
-        self.plate_acq_name = sorted(self.qc_info["plate_acq_name"].unique().to_list())
-        self.plate_acq_id = sorted(self.qc_info["plate_acq_id"].unique().to_list())
-        self.analysis_id = sorted(self.qc_info["analysis_id"].unique().to_list())
-        if self.qc_data is not None:
+        self.pipeline_name = sorted(self.info["pipeline_name"].unique().to_list())
+        self.analysis_date = sorted(self.info["analysis_date"].unique().to_list())
+        self.plate_barcode = sorted(self.info["plate_barcode"].unique().to_list())
+        self.plate_acq_name = sorted(self.info["plate_acq_name"].unique().to_list())
+        self.plate_acq_id = sorted(self.info["plate_acq_id"].unique().to_list())
+        self.analysis_id = sorted(self.info["analysis_id"].unique().to_list())
+        if self.df is not None:
             self.plate_wells = (
-                self.qc_data.select("Metadata_Well")
+                self.df.select("Metadata_Well")
                 .unique()
                 .sort(by="Metadata_Well")
                 .to_series()
@@ -225,7 +223,7 @@ class ExperimentData:
             )
             self.plate_rows = sorted(list({w[0] for w in self.plate_wells}))
             self.plate_columns = sorted(list({w[1:] for w in self.plate_wells}))
-            self.qc_module = get_qc_module(self.qc_data)
+            self.qc_module = get_qc_module(self.df)
 
     def flag_it(
         self,
@@ -240,7 +238,7 @@ class ExperimentData:
         multiplier: float = 1.5,
     ):
         return flag_outliers(
-            self.qc_data,
+            self.df,
             module_to_keep,
             module_to_drop,
             method,
@@ -258,7 +256,7 @@ class ExperimentData:
         module_to_drop: Set[str] = None,
     ):
         return get_qc_data_dict(
-            self.qc_data,
+            self.df,
             module_to_keep,
             module_to_drop,
         )
@@ -267,7 +265,7 @@ class ExperimentData:
         self,
         qc_module_list: List[str] = None,
     ):
-        d = get_channels(self.qc_data, qc_module_list)
+        d = get_channels(self.df, qc_module_list)
         for module, data in d.items():
             print(module)
             print("  Channels:", data["channels"])
@@ -286,7 +284,7 @@ class ExperimentData:
         if not plate_names:
             plate_names = self.plate_barcode
         return plate_heatmap(
-            self.qc_data,
+            self.df,
             plate_names,
             subplot_num_columns,
             plot_size,
@@ -306,7 +304,7 @@ class ExperimentData:
         if not title:
             title = self.project_name
         return qc_lineplot(
-            self.qc_data,
+            self.df,
             qc_module_to_plot,
             title,
             plot_size,
@@ -315,3 +313,50 @@ class ExperimentData:
             y_axis_range,
             colors,
         )
+
+def get_cp_info(
+    name: str,
+    filter: dict = None,
+):
+    query = f"""
+            SELECT *
+            FROM image_analyses_per_plate
+            WHERE project ILIKE '%%{name}%%'
+            AND meta->>'type' = 'cp-features'
+            AND analysis_date IS NOT NULL
+            ORDER BY plate_acq_id, analysis_id
+            """
+    df = pl.read_database(query, DB_URI)
+
+    if filter is None:
+        return df
+    conditions = []
+    # Iterate over each key-value pair in the filter dictionary
+    for key, values in filter.items():
+        # Create an OR condition for each value associated with a key
+        key_conditions = [pl.col(key).str.contains(val) for val in values]
+        combined_key_condition = key_conditions[0]
+        for condition in key_conditions[1:]:
+            combined_key_condition = combined_key_condition | condition
+        conditions.append(combined_key_condition)
+    # Combine all conditions with AND
+    final_condition = conditions[0]
+    for condition in conditions[1:]:
+        final_condition = final_condition & condition
+    # Apply the condition to the DataFrame
+    return df.filter(final_condition)
+
+
+def get_cp_data():
+    pass
+    
+class CP:
+    def __init__(self, name: str, saving_dir: str = 'data', filter: dict = None, feature_names: List[str] = None) -> None:
+        
+        if feature_names is None:
+            feature_names = ['featICF_nuclei', 'featICF_cells', 'featICF_cytoplasm']
+        plae_name_prefix = 'Image_Mean'
+
+        # Create output directory if it doesn't exist
+        if not os.path.exists(saving_dir):
+            os.makedirs(saving_dir)

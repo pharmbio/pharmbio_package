@@ -1,5 +1,7 @@
 pandas
 polars
+tqdm
+ipywidgets
 pyarrow
 sqlalchemy
 connectorx>=0.3.1
