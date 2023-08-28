@@ -1,8 +1,5 @@
 # ------------------- This is to query over experiment name ------------------ #
-def experiment_name_sql_query(
-    experiment_name,
-    table_name_on_db
-    ):
+def experiment_name_sql_query(experiment_name, table_name_on_db):
     return f"""
             SELECT {experiment_name}
             FROM {table_name_on_db}
@@ -12,21 +9,12 @@ def experiment_name_sql_query(
 
 
 # ------------------ This is to get the experiment metadata ------------------ #
-def experiment_metadata_sql_query(
-    name,
-    table_name_on_db,
-    experiment_name,
-    plate_barcode,
-    analysis_date,
-    plate_acq_id,
-    analysis_id,
-    data_type
-):
+def experiment_metadata_sql_query(name, db_schema, experiment_type):
     return f"""
             SELECT *
-            FROM {table_name_on_db}
-            WHERE {experiment_name} ILIKE '%%{name}%%'
-            AND meta->>'type' = {data_type}
-            AND {analysis_date} IS NOT NULL
-            ORDER BY {plate_barcode}, {plate_acq_id}, {analysis_id}
+            FROM {db_schema['EXPERIMENT_METADATA_TABLE_NAME_ON_DB']}
+            WHERE {db_schema['EXPERIMENT_NAME_COLUMN']} ILIKE '%%{name}%%'
+            AND meta->>'type' = '{experiment_type}'
+            AND {db_schema['EXPERIMENT_ANALYSIS_DATE_COLUMN']} IS NOT NULL
+            ORDER BY {db_schema['EXPERIMENT_PLATE_BARCODE_COLUMN']}, {db_schema['EXPERIMENT_PLATE_ACQID_COLUMN']}, {db_schema['EXPERIMENT_ANALYSIS_ID_COLUMN']}
             """

@@ -1,6 +1,7 @@
 import polars as pl
 from typing import Union, List
 from pharmbio import config as cfg
+from pharmbio.config import DATABASE_SCHEMA
 
 from pharmbio.logger import (
     log_info,
@@ -25,26 +26,22 @@ def get_image_quality_ref(
 ):  # sourcery skip: low-code-quality
     # Query database and store result in Polars dataframe
     query = experiment_metadata_sql_query(
-        name,
-        cfg.EXPERIMENT_METADATA_TABLE_NAME_ON_DB,
-        cfg.EXPERIMENT_NAME_COLUMN,
-        cfg.EXPERIMENT_PLATE_BARCODE_COLUMN,
-        cfg.EXPERIMENT_ANALYSIS_DATE_COLUMN,
-        cfg.EXPERIMENT_PLATE_ACQID_COLUMN,
-        cfg.EXPERIMENT_ANALYSIS_ID_COLUMN,
-        cfg.IMAHGE_QUALITY_METADATA_TYPE,
+        name, DATABASE_SCHEMA, cfg.IMAHGE_QUALITY_METADATA_TYPE
     )
     image_quality_reference = pl.read_database(query, cfg.DB_URI)
     data_dict = (
         image_quality_reference.select(
-            [cfg.EXPERIMENT_NAME_COLUMN, cfg.EXPERIMENT_PLATE_BARCODE_COLUMN]
+            [
+                DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"],
+                DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"],
+            ]
         )
-        .groupby(cfg.EXPERIMENT_NAME_COLUMN)
-        .agg(pl.col(cfg.EXPERIMENT_PLATE_BARCODE_COLUMN))
+        .groupby(DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"])
+        .agg(pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]))
         .to_dicts()
     )
     unique_project_count = image_quality_reference.unique(
-        cfg.EXPERIMENT_NAME_COLUMN
+        DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"]
     ).height
 
     if unique_project_count == 0:
@@ -52,12 +49,12 @@ def get_image_quality_ref(
     elif unique_project_count > 1:
         message = (
             f"Quering the db for {name} found {unique_project_count} studies: "
-            f"{image_quality_reference.unique(cfg.EXPERIMENT_NAME_COLUMN)[cfg.EXPERIMENT_NAME_COLUMN].to_list()}"
+            f"{image_quality_reference.unique(DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN'])[DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN']].to_list()}"
         )
     else:
         message = (
             f"Quering the db for {name} found {unique_project_count} study: "
-            f"{image_quality_reference.unique(cfg.EXPERIMENT_NAME_COLUMN)[cfg.EXPERIMENT_NAME_COLUMN].to_list()}"
+            f"{image_quality_reference.unique(DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN'])[DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN']].to_list()}"
         )
     log_info(f"{message}\n{'_'*50}")
 
@@ -69,7 +66,7 @@ def get_image_quality_ref(
     log_info("\n" + "_" * 50)
 
     grouped_replicates = image_quality_reference.groupby(
-        cfg.EXPERIMENT_PLATE_BARCODE_COLUMN
+        DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]
     )
 
     for plate_name, group in grouped_replicates:
@@ -77,31 +74,35 @@ def get_image_quality_ref(
             log_warning(
                 (
                     f"Analysis for the plate with barcode {plate_name} is replicated {len(group)} times with "
-                    f"{cfg.EXPERIMENT_ANALYSIS_ID_COLUMN} of {sorted(group[cfg.EXPERIMENT_ANALYSIS_ID_COLUMN].to_list())}"
+                    f"{DATABASE_SCHEMA['EXPERIMENT_ANALYSIS_ID_COLUMN']} of {sorted(group[DATABASE_SCHEMA['EXPERIMENT_ANALYSIS_ID_COLUMN']].to_list())}"
                 )
             )
     if image_quality_reference.filter(
-        pl.col(cfg.EXPERIMENT_PLATE_BARCODE_COLUMN).is_duplicated()
+        pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]).is_duplicated()
     ).is_empty():
         log_info("No replicated analysis has been found!")
     if drop_replication == "Auto" and keep_replication == "None":
         # keeping the highest analysis_id value of replicated rows
         image_quality_reference = (
             image_quality_reference.sort(
-                cfg.EXPERIMENT_ANALYSIS_ID_COLUMN, descending=True
+                DATABASE_SCHEMA["EXPERIMENT_ANALYSIS_ID_COLUMN"], descending=True
             )
-            .unique(cfg.EXPERIMENT_PLATE_BARCODE_COLUMN, keep="first")
-            .sort(cfg.EXPERIMENT_ANALYSIS_ID_COLUMN)
+            .unique(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"], keep="first")
+            .sort(DATABASE_SCHEMA["EXPERIMENT_ANALYSIS_ID_COLUMN"])
         )
     elif isinstance(drop_replication, list):
         # drop rows by analysis_id
         image_quality_reference = image_quality_reference.filter(
-            ~pl.col(cfg.EXPERIMENT_ANALYSIS_ID_COLUMN).is_in(drop_replication)
+            ~pl.col(DATABASE_SCHEMA["EXPERIMENT_ANALYSIS_ID_COLUMN"]).is_in(
+                drop_replication
+            )
         )
     elif isinstance(keep_replication, list):
         # drop rows by analysis_id
         image_quality_reference = image_quality_reference.filter(
-            pl.col(cfg.EXPERIMENT_ANALYSIS_ID_COLUMN).is_in(keep_replication)
+            pl.col(DATABASE_SCHEMA["EXPERIMENT_ANALYSIS_ID_COLUMN"]).is_in(
+                keep_replication
+            )
         )
 
     if filter is None:
@@ -130,9 +131,9 @@ def get_image_quality_data(
     # Add image_quality_data_file column based on RESULT_DIRECTORY_COLUMN and PLATE_BARCODE_COLUMN
     filtered_image_quality_info = filtered_image_quality_info.with_columns(
         (
-            pl.col(cfg.EXPERIMENT_RESULT_DIRECTORY_COLUMN)
+            pl.col(DATABASE_SCHEMA["EXPERIMENT_RESULT_DIRECTORY_COLUMN"])
             + cfg.IMAGE_QUALITY_FILE_PREFIX
-            + pl.col(cfg.EXPERIMENT_PLATE_BARCODE_COLUMN)
+            + pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"])
         ).alias("image_quality_data_file")
     )
     log_info("\n")
@@ -143,8 +144,10 @@ def get_image_quality_data(
         if ext is not None:
             df = read_file(row["image_quality_data_file"], ext)
             df = df.with_columns(
-                pl.lit(row[cfg.EXPERIMENT_PLATE_ACQID_COLUMN]).alias("Metadata_AcqID"),
-                pl.lit(row[cfg.EXPERIMENT_PLATE_BARCODE_COLUMN]).alias(
+                pl.lit(row[DATABASE_SCHEMA["EXPERIMENT_PLATE_ACQID_COLUMN"]]).alias(
+                    "Metadata_AcqID"
+                ),
+                pl.lit(row[DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]]).alias(
                     "Metadata_Barcode"
                 ),
             )
@@ -192,6 +195,10 @@ def get_image_quality_data(
             ).alias("ImageID")
         )
         .sort(["Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageID"])
+        # reorder columns to match desired order
+        .select(pl.col(["ImageID", "Metadata_AcqID", "Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageNumber",]),
+                pl.exclude(["ImageID", "Metadata_AcqID", "Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageNumber",])
+        )
         if dfs
         else None
     )

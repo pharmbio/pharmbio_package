@@ -10,12 +10,7 @@ def get_cell_morphology_ref(
 ):
     query = experiment_metadata_sql_query(
         name,
-        cfg.EXPERIMENT_METADATA_TABLE_NAME_ON_DB,
-        cfg.EXPERIMENT_NAME_COLUMN,
-        cfg.EXPERIMENT_PLATE_BARCODE_COLUMN,
-        cfg.EXPERIMENT_ANALYSIS_DATE_COLUMN,
-        cfg.EXPERIMENT_PLATE_ACQID_COLUMN,
-        cfg.EXPERIMENT_ANALYSIS_ID_COLUMN,
+        cfg.DATABASE_SCHEMA,
         cfg.CELL_MORPHOLOGY_METADATA_TYPE,
     )
     df = pl.read_database(query, cfg.DB_URI)
