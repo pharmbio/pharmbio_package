@@ -8,7 +8,7 @@ import numpy as np
 from collections import defaultdict
 from typing import Union, Literal, Tuple, Set, List, Dict
 from .qc import get_channels, get_qc_data_dict, DEFAULT_QC_MODULES
-from .util import normalize_df
+from .utils import normalize_df
 
 COLORS = px.colors.qualitative.Set1
 
@@ -224,7 +224,7 @@ def _lineplot(
     fig.show()
 
 
-def qc_lineplot(
+def quality_module_lineplot(
     df: Union[pl.DataFrame, pd.DataFrame],
     qc_module_to_plot: Set[str] = None,
     title: str = "Unnamed",

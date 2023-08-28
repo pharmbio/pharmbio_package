@@ -4,7 +4,7 @@ import pandas as pd
 from collections import defaultdict
 from typing import Union, Tuple, Literal, Set, List, Dict
 import re
-from .util import normalize_df
+from .utils import normalize_df
 
 
 DEFAULT_QC_MODULES = {
@@ -106,7 +106,7 @@ def get_channels(
     return result_dict
 
 
-def flag_outliers(
+def flag_outlier_images(
     qc_data: Union[pl.DataFrame, pd.DataFrame],
     module_to_keep: Set[str] = None,
     module_to_drop: Set[str] = None,
