@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pharmbio",
-    version="0.1.0",
+    version="0.1.3",
     url="https://github.com/pharmbio/pharmbio_package",
     author="Nima Chamyani",
     author_email="nima.ch@gmail.com",
@@ -14,10 +14,11 @@ setup(
         "pyarrow",
         "sqlalchemy",
         "connectorx>=0.3.1",
-        "psycopg2",
+        "psycopg2-binary",
         "plotly",
         "nbformat",
         "matplotlib",
         "scikit-learn",
+        "tqdm"
     ],
 )
