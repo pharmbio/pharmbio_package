@@ -26,15 +26,14 @@ def aggregate_morphology_data_gpu(
     df, columns_to_aggregate, groupby_columns, aggregation_function="mean"
 ):
     try:
-        if client is None:
-            LocalCUDACluster = importlib.import_module("dask_cuda").LocalCUDACluster
-            Client = importlib.import_module("dask.distributed").Client
-            dask = importlib.import_module("dask")
-            with dask.config.set(jit_unspill=True):
-                cluster = LocalCUDACluster(n_workers=4, device_memory_limit="2GB")
-                client = Client(cluster)
-        dd = importlib.import_module("dask.dataframe")
-        np = importlib.import_module("numpy")
+        import importlib
+        import numpy as np
+
+        cudf = importlib.import_module("cudf")
+        # Convert the Polars DataFrame to Arrow table and then to cuDF DataFrame
+        # This will avoid copying the data and thus more efficient
+        arrow_table = df.to_arrow()
+        df = cudf.DataFrame.from_arrow(arrow_table)
 
         # Check for special case where 'mean' should map to 'nanmean'
         if aggregation_function == "mean":
@@ -45,19 +44,15 @@ def aggregate_morphology_data_gpu(
             agg_func = getattr(np, aggregation_function)
 
         agg_dict = {col: agg_func for col in columns_to_aggregate}
+        agg_df = df.groupby(groupby_columns).agg(agg_dict).reset_index()
 
-        # Convert the Polars DataFrame to a Dask DataFrame
-        # The number of partitions can be adjusted depending on your needs
-        ddf = dd.from_pandas(df.to_pandas(), npartitions=4)
-        agg_ddf = ddf.groupby(groupby_columns).agg(agg_dict).reset_index()
+        agg_df = agg_df.sort_values(by=groupby_columns)
 
-        sorted_ddf = agg_ddf.compute().sort_values(by=groupby_columns)
-
-        return pl.from_arrow(sorted_ddf.to_arrow())
+        return pl.from_arrow(agg_df.to_arrow())
 
     except ImportError as e:
         raise ImportError(
-            "Dask-CUDA is not available. Please install it to use GPU acceleration."
+            "cuDF is not available. Please install it to use GPU acceleration."
         ) from e
     except Exception as e:
         raise RuntimeError(f"An unexpected error occurred: {str(e)}") from e
