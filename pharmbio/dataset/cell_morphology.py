@@ -1,8 +1,10 @@
 import os
 import re
 import polars as pl
+import pandas as pd
 import polars.selectors as cs
 from pathlib import Path
+from typing import Union, Optional, List, Dict
 from tqdm.notebook import tqdm
 from .. import config as cfg
 from ..utils import has_gpu
@@ -19,8 +21,30 @@ from ..logger import (
 
 def get_cell_morphology_ref(
     name: str,
-    filter: dict = None,
+    filter: Optional[Dict[str, str]] = None,
 ):
+    """
+    Retrieves cell morphology references from the database based on the specified name and optional filter to select desired rows.
+
+    Args:
+        name (str): The name of the cell morphology reference.
+        filter (dict, optional): A dictionary specifying the filter conditions. Each key represents a column name, and the corresponding value is a list of values to match. Defaults to None.
+
+    Returns:
+        pl.DataFrame: The filtered cell morphology references DataFrame.
+
+    Example:
+        ```python
+        name = "example_reference"
+        filter = {
+            "column1": ["value_1", "value2"],  # values are combined with OR, and key-values are combined with AND
+            "column2": ["value3"]
+        }
+        filtered_df = get_cell_morphology_ref(name, filter)
+        display(filtered_df)
+        ```
+    """
+
     query = experiment_metadata_sql_query(
         name,
         cfg.DATABASE_SCHEMA,
@@ -48,12 +72,41 @@ def get_cell_morphology_ref(
 
 
 def get_cell_morphology_data(
-    cell_morphology_ref_df: pl.DataFrame,
-    aggregation_level="cell",
-    aggregation_method=None,
+    cell_morphology_ref_df: Union[pl.DataFrame, pd.DataFrame],
+    aggregation_level: str ="cell",
+    aggregation_method: Optional[Dict[str, str]] = None,
     path_to_save: str = "data",
-    use_gpu=False,
+    use_gpu: bool = False,
 ):
+    """
+    Retrieves cell morphology data from the specified cell morphology reference DataFrame and performs aggregation at the specified level.
+
+    Args:
+        cell_morphology_ref_df (Union[pl.DataFrame, pd.DataFrame]): The cell morphology reference DataFrame.
+        aggregation_level (str, optional): The level at which to perform aggregation. Defaults to "cell". It can be one of the following: "cell", "site", "well", "plate", "compound".
+        aggregation_method (Dict[str, str], optional): The aggregation method for each level. Defaults to None. 
+        You shoul set the aggregation method for each level in a dictionary. Possible values are: "mean", "median", "sum", "min", "max", "first", "last".
+        path_to_save (str, optional): The path to save the aggregated data. Defaults to "data".
+        use_gpu (bool, optional): Whether to use GPU acceleration. Defaults to False.
+
+    Returns:
+        pl.DataFrame: The aggregated cell morphology data.
+
+    Raises:
+        EnvironmentError: Raised when GPU is not available on the machine ans use_gpu is True.
+
+    Example:
+        ```python
+        cell_morphology_ref_df = get_cell_morphology_ref("example_reference", filter)
+        aggregated_df = get_cell_morphology_data(cell_morphology_ref_df, aggregation_level='plate')
+        display(aggregated_df)
+        ```
+    """
+
+    # Check if data is in pandas DataFrame, if so convert to polars DataFrame
+    if isinstance(cell_morphology_ref_df, pd.DataFrame):
+        cell_morphology_ref_df = pl.from_pandas(cell_morphology_ref_df)
+        
     if aggregation_method is None:
         aggregation_method = {
             "cell": "median",
@@ -215,7 +268,7 @@ def get_cell_morphology_data(
         ]
         df_combined = df_combined.with_columns(cast_cols)
 
-        # ordering the columns
+        # Ordering the columns
 
         morphology_feature_cols = df_combined.select(
             cs.by_dtype(pl.NUMERIC_DTYPES)
@@ -248,35 +301,14 @@ def get_cell_morphology_data(
         aggregated_data = df_combined.drop_nulls(subset="batch_id")
 
         # Mapping of aggregation levels to their grouping columns
-        grouping_columns_map = {
-            "cell": [
-                "CellID",
-                "ImageID",
-                "Metadata_AcqID",
-                "Metadata_Barcode",
-                "Metadata_Well",
-                "Metadata_Site",
-                "batch_id",
-            ],
-            "site": [
-                "ImageID",
-                "Metadata_AcqID",
-                "Metadata_Barcode",
-                "Metadata_Well",
-                "Metadata_Site",
-                "batch_id",
-            ],
-            "well": ["Metadata_AcqID", "Metadata_Barcode", "Metadata_Well", "batch_id"],
-            "plate": ["Metadata_AcqID", "Metadata_Barcode", "batch_id"],
-            "compound": ["batch_id"],
-        }
+        grouping_columns_map = cfg.GROUPING_COLUMN_MAP
         
         if use_gpu and not has_gpu():
             raise EnvironmentError("GPU is not available on this machine. Install NVIDIA System Management Interface (nvidia-smi) to enable this check.")
 
         # Iterate over the levels and aggregate data progressively
+        aggregation_func = fa.aggregate_data_gpu if use_gpu else fa.aggregate_data_cpu
         for level in ["cell", "site", "well", "plate", "compound"]:
-            aggregation_func = fa.aggregate_morphology_data_gpu if use_gpu else fa.aggregate_morphology_data_cpu
             aggregated_data = aggregation_func(
                 df=aggregated_data,
                 columns_to_aggregate=morphology_feature_cols,

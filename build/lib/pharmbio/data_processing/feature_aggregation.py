@@ -1,4 +1,5 @@
 import polars as pl
+import importlib
 
 
 def aggregate_morphology_data_cpu(
@@ -33,7 +34,7 @@ def aggregate_morphology_data_gpu(
         # This will avoid copying the data and thus more efficient
         arrow_table = df.to_arrow()
         df = cudf.DataFrame.from_arrow(arrow_table)
-        
+
         # Check for special case where 'mean' should map to 'nanmean'
         if aggregation_function == "mean":
             agg_func = np.nanmean
