@@ -1,6 +1,6 @@
 import polars as pl
-from pharmbio.config import DB_URI, DATABASE_SCHEMA
-from pharmbio.database.queries import experiment_name_sql_query
+from ..config import DB_URI, DATABASE_SCHEMA
+from ..database.queries import experiment_name_sql_query
 
 
 def get_projects_list(lookup: str = None):

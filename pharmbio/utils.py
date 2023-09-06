@@ -2,7 +2,6 @@ import os
 import subprocess
 import polars as pl
 import pandas as pd
-import subprocess
 from typing import Union, Literal
 from .logger import (
     log_error,

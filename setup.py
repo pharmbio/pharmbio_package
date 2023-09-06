@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pharmbio",
-    version="0.1.4",
+    version="0.1.5",
     url="https://github.com/pharmbio/pharmbio_package",
     author="Nima Chamyani",
     author_email="nima.ch@gmail.com",
@@ -17,8 +17,6 @@ setup(
         "psycopg2-binary",
         "plotly",
         "nbformat",
-        "matplotlib",
-        "scikit-learn",
         "tqdm"
     ],
 )
