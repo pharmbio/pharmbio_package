@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import Union, Tuple, Literal, Set, List, Dict
 from sys import displayhook
 
-from ..utils import normalize_df
+from ..utils import normalize_df, pretty_print_channel_dict
 from .. import config as cfg
 
 
@@ -99,7 +99,7 @@ def get_qc_data_dict(
 
 
 def get_channels(
-    qc_data: Union[pl.DataFrame, pd.DataFrame], qc_module_list: List[str] = None
+    qc_data: Union[pl.DataFrame, pd.DataFrame], qc_module_list: List[str] = None, out_put: str = "dict"
 ):
     """
     Returns a dictionary of channels and sub-channels for each QC module in the given QC data.
@@ -107,6 +107,7 @@ def get_channels(
     Args:
         qc_data (Union[pl.DataFrame, pd.DataFrame]): The QC data containing columns related to image quality.
         qc_module_list (List[str], optional): The list of QC modules to consider. Defaults to None.
+        out_put (str, optional): The output format. Defaults to "dict". displayhook is used if set to 'print'.
 
     Returns:
         Dict[str, Dict[str, List[str]]]: A dictionary of channels and sub-channels for each QC module.
@@ -122,8 +123,8 @@ def get_channels(
         channels = get_channels(qc_data)
         print(channels)
         ```
-        {'FocusScore': {'channels': ['CONC', 'HOECHST'], 'sub_channels': []},
-        'Intensity': {'channels': ['CONC'], 'sub_channels': []}
+        # Output:{'FocusScore': {'channels': ['CONC', 'HOECHST'], 'sub_channels': []},
+                'Intensity': {'channels': ['CONC'], 'sub_channels': []}
     """
 
     # Check if data is in pandas DataFrame, if so convert to polars DataFrame
@@ -160,7 +161,7 @@ def get_channels(
             "sub_channels": sorted(sub_channel_list),
         }
 
-    return result_dict
+    return result_dict if out_put == "dict" else pretty_print_channel_dict(result_dict)
 
 
 def flag_outlier_images(

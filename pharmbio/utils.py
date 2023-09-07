@@ -118,6 +118,14 @@ def normalize_df(
     )
     return df
 
+def pretty_print_channel_dict(d):
+    for module, data in d.items():
+        print(module)
+        print("  Channels:", data['channels'])
+        if data['sub_channels'] != []:
+            print("  Sub-channels:", data['sub_channels'])
+        print()
+
 
 def has_gpu():
     """

@@ -130,6 +130,7 @@ def _lineplot(
     data_frames: pl.DataFrame,
     colors: List[str],
     title: str,
+    plate_names: List[str],
     plot_size: int = 1400,
     normalization: bool = True,
     normalization_method: Literal["zscore", "minmax"] = "zscore",
@@ -179,22 +180,41 @@ def _lineplot(
         )
         fig.update_yaxes(range=y_axis_range, row=x + 1, col=1)
 
-        fig.add_shape(
-            type="line",
-            xref="x",
-            yref="paper",
-            x0=CurrentDataFrame.height / 2,
-            y0=y_axis_range[0],
-            x1=CurrentDataFrame.height / 2,
-            y1=y_axis_range[1],
-            line=dict(
-                color="Black",
-                width=1,
-                dash="dashdot",
-            ),
-            row=x + 1,
-            col=1,
-        )
+        num_of_plates = len(plate_names)
+        data_points_per_plate = CurrentDataFrame.height / num_of_plates
+
+        for plate in range(num_of_plates):
+            # If not the last plate, add a vertical separator line
+            if plate < num_of_plates - 1:
+                fig.add_shape(
+                    type="line",
+                    xref="x",
+                    yref="paper",
+                    x0=(plate + 1) * data_points_per_plate,
+                    y0=y_axis_range[0],
+                    x1=(plate + 1) * data_points_per_plate,
+                    y1=y_axis_range[1],
+                    line=dict(
+                        color="Black",
+                        width=1,
+                        dash="dashdot",
+                    ),
+                    row=x + 1,
+                    col=1,
+                )
+            # Add plate name as an annotation in the middle of the current section/plate
+            fig.add_annotation(
+                text=plate_names[plate],
+                xref="x",
+                yref="paper",
+                x=(plate * data_points_per_plate + (plate + 1) * data_points_per_plate)
+                / 2,  # Midpoint of the plate section
+                y=y_axis_range[0] + 0.1,  # Just below the plot
+                showarrow=False,
+                font=dict(size=10),
+                row=x + 1,
+                col=1,
+            )
 
     # Dummy traces for the legend
     for i, channel_name in enumerate(channel_names):
@@ -242,6 +262,9 @@ def quality_module_lineplot(
     image_quality_measures = sorted(list(qc_module_to_plot))
     data_frame_dictionary = get_qc_data_dict(df, module_to_keep=qc_module_to_plot)
     channel_dict = get_channels(df, qc_module_list=image_quality_measures)
+    plate_names_list = (
+        df.unique("Metadata_Barcode").select("Metadata_Barcode").to_series().to_list()
+    )
 
     channel_data_frames = defaultdict(list)
     subchannel_data_frames = defaultdict(list)
@@ -268,6 +291,7 @@ def quality_module_lineplot(
             normalization=normalization,
             normalization_method=normalization_method,
             y_axis_range=y_axis_range,
+            plate_names=plate_names_list,
         )
 
     for data_frames in subchannel_data_frames.values():
@@ -279,4 +303,5 @@ def quality_module_lineplot(
             normalization=normalization,
             normalization_method=normalization_method,
             y_axis_range=y_axis_range,
+            plate_names=plate_names_list,
         )
