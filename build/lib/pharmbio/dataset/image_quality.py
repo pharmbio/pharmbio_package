@@ -23,7 +23,29 @@ def get_image_quality_ref(
     drop_replication: Union[str, List[int]] = "Auto",
     keep_replication: Union[str, List[int]] = "None",
     filter: dict = None,
-):  # sourcery skip: low-code-quality
+):
+    """
+    Retrieves the image quality reference data from the database based on the provided name and optional filters.
+
+    Args:
+        name (str): The name of experiment for the image quality reference.
+        drop_replication (Union[str, List[int]], optional): The replication(s) to drop. Default is set to "Auto" which keep the experiment with highest id number (latest experiment). It can be "None" or a list of analysis_id.
+        keep_replication (Union[str, List[int]], optional): The replication(s) to keep. Defaults to "None".
+        filter (dict, optional): Filters to apply to the data. Defaults to None.
+
+    Returns:
+        polars.DataFrame: The image quality reference data.
+
+    Examples:
+        ```python
+        name = "example"
+        drop_replication = [1, 2]
+        keep_replication = "None"
+        filter = {"column1": ["value1", "value2"], "column2": ["value3"]}
+        
+        result = get_image_quality_ref(name, drop_replication, keep_replication, filter)
+        ```
+    """
     query = experiment_metadata_sql_query(
         name, DATABASE_SCHEMA, cfg.IMAHGE_QUALITY_METADATA_TYPE
     )
@@ -127,6 +149,25 @@ def get_image_quality_data(
     filtered_image_quality_info: pl.DataFrame,
     force_merging_columns: Union[bool, str] = False,
 ):
+    """
+    Retrieves and processes image quality data based on the provided filtered image quality information.
+
+    Args:
+        filtered_image_quality_info (polars.DataFrame): The filtered image quality information.
+        force_merging_columns (Union[bool, str], optional): Specifies how to handle merging columns. Defaults to False. 'keep' will keep all columns and fill missing values with null, 'drop' will merge dfs horizontally, only keeps matching columns, False will return None.
+
+    Returns:
+        polars.DataFrame: The concatenated and processed image quality data.
+
+    Examples:
+        ```python
+        filtered_image_quality_ref = get_image_quality_ref()
+        force_merging_columns = "keep"
+        
+        result = get_image_quality_data(filtered_image_quality_ref, force_merging_columns)
+        ```
+    """
+
     # Add image_quality_data_file column based on RESULT_DIRECTORY_COLUMN and PLATE_BARCODE_COLUMN
     filtered_image_quality_info = filtered_image_quality_info.with_columns(
         (

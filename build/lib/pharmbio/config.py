@@ -28,19 +28,19 @@ DB_URI = os.environ.get("DB_URI")
 #                                DATABASE SCHEMA                               #
 # ---------------------------------------------------------------------------- #
 DATABASE_SCHEMA = {
-    "EXPERIMENT_METADATA_TABLE_NAME_ON_DB":     "image_analyses_per_plate",
-    "EXPERIMENT_NAME_COLUMN":                   "project",
-    "EXPERIMENT_PLATE_BARCODE_COLUMN":          "plate_barcode",
-    "EXPERIMENT_PLATE_ACQID_COLUMN":            "plate_acq_id",
-    "EXPERIMENT_PLATE_AQNAME_COLUMN":           "plate_acq_name",
-    "EXPERIMENT_ANALYSIS_ID_COLUMN":            "analysis_id",
-    "EXPERIMENT_ANALYSIS_DATE_COLUMN":          "analysis_date",
-    "EXPERIMENT_RESULT_DIRECTORY_COLUMN":       "results",
-    "PLATE_LAYOUT_TABLE_NAME_ON_DB":            "plate_v1",
-    "PLATE_LAYOUT_BARCODE_COLUMN":              "barcode",
-    "PLATE_COMPOUND_NAME_COLUMN":               "batch_id",
+    "EXPERIMENT_METADATA_TABLE_NAME_ON_DB": "image_analyses_per_plate",
+    "EXPERIMENT_NAME_COLUMN": "project",
+    "EXPERIMENT_PLATE_BARCODE_COLUMN": "plate_barcode",
+    "EXPERIMENT_PLATE_ACQID_COLUMN": "plate_acq_id",
+    "EXPERIMENT_PLATE_AQNAME_COLUMN": "plate_acq_name",
+    "EXPERIMENT_ANALYSIS_ID_COLUMN": "analysis_id",
+    "EXPERIMENT_ANALYSIS_DATE_COLUMN": "analysis_date",
+    "EXPERIMENT_RESULT_DIRECTORY_COLUMN": "results",
+    "PLATE_LAYOUT_TABLE_NAME_ON_DB": "plate_v1",
+    "PLATE_LAYOUT_BARCODE_COLUMN": "barcode",
+    "PLATE_COMPOUND_NAME_COLUMN": "batch_id",
 }
-    
+
 # ----------------------- IMAGE QUALITY METADATA SCHEMA ---------------------- #
 #  The dataframe that include the metadata for the image quality data and      #
 #  refrence to the image quality data file and is retrived from the ImageDB.   #
@@ -63,4 +63,59 @@ CELL_MORPHOLOGY_METADATA_TYPE = "cp-features"
 # List of raw file names that includes object features produced by cellprofiler#
 #  for each plate and retrived from csv/parquet file in the result directory.  #
 # ---------------------------------------------------------------------------- #
-OBJECT_FILE_NAMES = ['featICF_nuclei', 'featICF_cells', 'featICF_cytoplasm']
+OBJECT_FILE_NAMES = ["featICF_nuclei", "featICF_cells", "featICF_cytoplasm"]
+
+# ---------------------------------------------------------------------------- #
+#            Mapping of aggregation levels to their grouping columns           #
+# ---------------------------------------------------------------------------- #
+GROUPING_COLUMN_MAP = {
+    "cell": [
+        "CellID",
+        "ImageID",
+        "Metadata_AcqID",
+        "Metadata_Barcode",
+        "Metadata_Well",
+        "Metadata_Site",
+        "batch_id",
+    ],
+    "site": [
+        "ImageID",
+        "Metadata_AcqID",
+        "Metadata_Barcode",
+        "Metadata_Well",
+        "Metadata_Site",
+        "batch_id",
+    ],
+    "well": ["Metadata_AcqID", "Metadata_Barcode", "Metadata_Well", "batch_id"],
+    "plate": ["Metadata_AcqID", "Metadata_Barcode", "batch_id"],
+    "compound": ["batch_id"],
+}
+
+# ---------------------------------------------------------------------------- #
+#               Setting image quality modules to consider for QC               #
+#                                                                              #
+#  posibble modules: 'Correlation', 'FocusScore', 'LocalFocusScore',           #
+#                    'MADIntensity', 'MaxIntensity', 'MeanIntensity',          #
+#                    'MedianIntensity', 'MinIntensity', 'PercentMaximal',      #
+#                    'PercentMinimal', 'PowerLogLogSlope', 'Scaling',          #
+#                    'StdIntensity', 'ThresholdBackground','ThresholdKapur',   #
+#                    'ThresholdMCT', 'ThresholdMoG', 'ThresholdOtsu',          #
+#                    'ThresholdRidlerCalvard', 'ThresholdRobustBackground',    #
+#                    'TotalArea', 'TotalIntensity'                             #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+
+DEFAULT_QC_MODULES = {
+    "FocusScore",
+    "MaxIntensity",
+    "MeanIntensity",
+    "PowerLogLogSlope",
+    "StdIntensity",
+}
+
+# ---------------------------------------------------------------------------- #
+#                              PLOT DECRETE COLOR                              #
+# ---------------------------------------------------------------------------- #
+import plotly.express as px
+
+COLORS = px.colors.qualitative.Set1

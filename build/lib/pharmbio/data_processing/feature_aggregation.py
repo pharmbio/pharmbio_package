@@ -1,10 +1,45 @@
 import polars as pl
+import pandas as pd
+from typing import Union, List
 import importlib
+from ..utils import get_gpu_info
 
 
-def aggregate_morphology_data_cpu(
-    df, columns_to_aggregate, groupby_columns, aggregation_function="mean"
+def aggregate_data_cpu(
+    df: Union[pl.DataFrame, pd.DataFrame],
+    columns_to_aggregate: List[str],
+    groupby_columns: List[str],
+    aggregation_function: str = "mean",
 ):
+    """
+    Aggregates morphology data using the specified columns and aggregation function.
+
+    Args:
+        df (Union[pl.DataFrame, pd.DataFrame]): The input DataFrame to be aggregated.
+        columns_to_aggregate (List[str]): The list of columns to be aggregated.
+        groupby_columns (List[str]): The list of columns to group by.
+        aggregation_function (str, optional): The aggregation function to be applied. Defaults to "mean" where 
+        possible values could set to: "mean", median, "sum", "min", "max", "first", "last".
+
+    Returns:
+        pl.DataFrame: The aggregated DataFrame.
+
+    Examples:
+        ```python
+        df = pd.DataFrame({
+            'A': [1, 2, 3, 4],
+            'B': [5, 6, 7, 8],
+            'C': [9, 10, 11, 12]
+        })
+        aggregated_df = aggregate_morphology_data_cpu(df, ['A', 'B'], ['C'])
+        print(aggregated_df)
+        ```
+    """
+    
+    # Check if data is in pandas DataFrame, if so convert to polars DataFrame
+    if isinstance(df, pd.DataFrame):
+        df = pl.from_pandas(df)
+        
     grouped = df.lazy().groupby(groupby_columns)
     retain_cols = [c for c in df.columns if c not in columns_to_aggregate]
     retained_metadata_df = df.lazy().select(retain_cols)
@@ -22,37 +57,89 @@ def aggregate_morphology_data_cpu(
     return agg_df.sort(groupby_columns).collect()
 
 
-def aggregate_morphology_data_gpu(
-    df, columns_to_aggregate, groupby_columns, aggregation_function="mean"
+def aggregate_data_gpu(
+    df: Union[pl.DataFrame, pd.DataFrame],
+    columns_to_aggregate: List[str],
+    groupby_columns: List[str],
+    aggregation_function: str = "mean",
 ):
+    """
+    Aggregates data using the specified columns and aggregation function with GPU acceleration.
+
+    Args:
+        df (Union[pl.DataFrame, pd.DataFrame]): The input DataFrame to be aggregated.
+        columns_to_aggregate (List[str]): The list of columns to be aggregated.
+        groupby_columns (List[str]): The list of columns to group by.
+        aggregation_function (str, optional): The aggregation function to be applied. Defaults to "mean" where 
+        possible values could set to: "mean", median, "sum", "min", "max", "first", "last".
+
+    Returns:
+        pl.DataFrame: The aggregated DataFrame.
+
+    Raises:
+        ImportError: Raised when Dask-CUDA is not available.
+        RuntimeError: Raised when an unexpected error occurs during the aggregation process.
+
+    Example:
+        ```python
+        df = pd.DataFrame({
+            'A': [1, 2, 3, 4],
+            'B': [5, 6, 7, 8],
+            'C': [9, 10, 11, 12]
+        })
+        aggregated_df = aggregate_data_gpu(df, ['A', 'B'], ['C'])
+        print(aggregated_df)
+        ```
+    """
+
+    # Check if data is in pandas DataFrame, if so convert to polars DataFrame
+    if isinstance(df, pd.DataFrame):
+        df = pl.from_pandas(df)
+    
+    total_memory, n_gpus = get_gpu_info()
+
+    if total_memory is not None and n_gpus is not None:
+        device_memory_limit = f"{total_memory * 0.8}MB"
+        npartitions = n_gpus * 4
+    else:
+        print("Failed to get GPU information.")
+
     try:
-        import importlib
-        import numpy as np
+        # Check if 'client' exists in the global namespace
+        if "client" not in globals() or client is None:
+            LocalCUDACluster = importlib.import_module("dask_cuda").LocalCUDACluster
+            Client = importlib.import_module("dask.distributed").Client
+            dask = importlib.import_module("dask")
+            with dask.config.set(jit_unspill=True):
+                cluster = LocalCUDACluster(
+                    n_workers=n_gpus, device_memory_limit=device_memory_limit
+                )
+                client = Client(cluster)
 
-        cudf = importlib.import_module("cudf")
-        # Convert the Polars DataFrame to Arrow table and then to cuDF DataFrame
-        # This will avoid copying the data and thus more efficient
-        arrow_table = df.to_arrow()
-        df = cudf.DataFrame.from_arrow(arrow_table)
+        dd = importlib.import_module("dask.dataframe")
 
-        # Check for special case where 'mean' should map to 'nanmean'
-        if aggregation_function == "mean":
-            agg_func = np.nanmean
-        elif aggregation_function == "median":
-            agg_func = np.nanmedian
-        else:
-            agg_func = getattr(np, aggregation_function)
+        agg_dict = {col: aggregation_function for col in columns_to_aggregate}
 
-        agg_dict = {col: agg_func for col in columns_to_aggregate}
-        agg_df = df.groupby(groupby_columns).agg(agg_dict).reset_index()
+        # Convert the Polars DataFrame to a Dask DataFrame
+        # The number of partitions can be adjusted depending on your needs
+        ddf = dd.from_pandas(df.to_pandas(), npartitions=npartitions)
+        agg_ddf = (
+            ddf.groupby(groupby_columns).agg(agg_dict, shuffle="tasks").reset_index()
+        )
 
-        agg_df = agg_df.sort_values(by=groupby_columns)
+        sorted_ddf = agg_ddf.compute().sort_values(by=groupby_columns)
 
-        return pl.from_arrow(agg_df.to_arrow())
+        result = pl.from_pandas(sorted_ddf.to_pandas())
+
+        # Cleanup
+        client.close()
+        cluster.close()
+
+        return result
 
     except ImportError as e:
         raise ImportError(
-            "cuDF is not available. Please install it to use GPU acceleration."
+            "Dask-CUDA is not available. Please install it to use GPU acceleration."
         ) from e
     except Exception as e:
         raise RuntimeError(f"An unexpected error occurred: {str(e)}") from e
