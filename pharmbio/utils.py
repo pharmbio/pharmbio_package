@@ -31,9 +31,6 @@ def get_file_extension(file_path_name):
         full_filename = file_path_name + ext
         if os.path.isfile(full_filename):
             return ext
-    log_error(
-        f"No file with extensions {possible_extensions} was not found for {file_path_name}."
-    )
     return None
 
 

@@ -51,7 +51,7 @@ IMAHGE_QUALITY_METADATA_TYPE = "cp-qc"
 #  Raw file prefix that includes image quality data produced by cellprofiler   #
 #  for each plate and retrived from csv/parquet file in the result directory.  #
 # ---------------------------------------------------------------------------- #
-IMAGE_QUALITY_FILE_PREFIX = "qcRAW_images_"
+IMAGE_QUALITY_FILE_PREFIX = "qcRAW_images"
 
 # ---------------------- CELL MORPHOLOGY METADATA SCHEMA --------------------- #
 #  The dataframe that include the metadata for the cell morphology data and    #
@@ -61,9 +61,31 @@ CELL_MORPHOLOGY_METADATA_TYPE = "cp-features"
 
 # ------------------------ OBJECT MORPHOLOGY DATA FILE ----------------------- #
 # List of raw file names that includes object features produced by cellprofiler#
-#  for each plate and retrived from csv/parquet file in the result directory.  #
+# for each plate and retrived from csv/parquet file in the result directory and#
+# their columns names                                                          #
+#                                                                              #
+# OBJECT_PARENT_KEY_COLUMN:                                                    #
+#               Both nuclei and cytoplasm files should have this column as a   #
+#               reference to the cell which they are blong to.                 #
 # ---------------------------------------------------------------------------- #
 OBJECT_FILE_NAMES = ["featICF_nuclei", "featICF_cells", "featICF_cytoplasm"]
+OBJECT_ID_COLUMN = "ObjectNumber"
+OBJECT_PARENT_CELL_COLUMN = "Parent_cells"
+MORPHOLOGY_METADATA_ACQID_COLUMNS = "Metadata_AcqID"
+MORPHOLOGY_METADATA_BARCODE_COLUMNS = "Metadata_Barcode"
+MORPHOLOGY_METADATA_WELL_COLUMNS = "Metadata_Well"
+MORPHOLOGY_METADATA_SITE_COLUMNS = "Metadata_Site"
+
+# --------------------- Aggregation method for each level -------------------- #
+#   value can be: mean, median, first, last, max, min                          #
+# ---------------------------------------------------------------------------- #
+AGGREGATION_METHOD_DICT = {
+    "cell": "median",
+    "site": "median",
+    "well": "median",
+    "plate": "mean",
+    "compound": "mean",
+}
 
 # ---------------------------------------------------------------------------- #
 #            Mapping of aggregation levels to their grouping columns           #
@@ -91,8 +113,8 @@ GROUPING_COLUMN_MAP = {
     "compound": ["batch_id"],
 }
 
-# ---------------------------------------------------------------------------- #
-#               Setting image quality modules to consider for QC               #
+
+# ------------- Setting image quality modules to consider for QC ------------- #
 #                                                                              #
 #  posibble modules: 'Correlation', 'FocusScore', 'LocalFocusScore',           #
 #                    'MADIntensity', 'MaxIntensity', 'MeanIntensity',          #

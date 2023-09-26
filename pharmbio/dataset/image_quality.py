@@ -1,3 +1,5 @@
+import os
+import glob
 import polars as pl
 from typing import Union, List
 from .. import config as cfg
@@ -42,7 +44,7 @@ def get_image_quality_ref(
         drop_replication = [1, 2]
         keep_replication = "None"
         filter = {"column1": ["value1", "value2"], "column2": ["value3"]}
-        
+
         result = get_image_quality_ref(name, drop_replication, keep_replication, filter)
         ```
     """
@@ -128,7 +130,7 @@ def get_image_quality_ref(
 
     if filter is None:
         return image_quality_reference
-    
+
     conditions = []
     for key, values in filter.items():
         # Create an OR condition for each value associated with a key
@@ -163,44 +165,50 @@ def get_image_quality_data(
         ```python
         filtered_image_quality_ref = get_image_quality_ref()
         force_merging_columns = "keep"
-        
+
         result = get_image_quality_data(filtered_image_quality_ref, force_merging_columns)
         ```
     """
-
-    # Add image_quality_data_file column based on RESULT_DIRECTORY_COLUMN and PLATE_BARCODE_COLUMN
-    filtered_image_quality_info = filtered_image_quality_info.with_columns(
-        (
-            pl.col(DATABASE_SCHEMA["EXPERIMENT_RESULT_DIRECTORY_COLUMN"])
-            + cfg.IMAGE_QUALITY_FILE_PREFIX
-            + pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"])
-        ).alias("image_quality_data_file")
-    )
-    log_info("\n")
+    
     # Read and process all the files in a list, skipping files not found
     dfs = []
     for row in filtered_image_quality_info.iter_rows(named=True):
-        ext = get_file_extension(row["image_quality_data_file"])
-        if ext is not None:
-            df = read_file(row["image_quality_data_file"], ext)
-            df = df.with_columns(
-                pl.lit(row[DATABASE_SCHEMA["EXPERIMENT_PLATE_ACQID_COLUMN"]]).alias(
-                    "Metadata_AcqID"
-                ),
-                pl.lit(row[DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]]).alias(
-                    "Metadata_Barcode"
-                ),
-            )
-            # Cast all numerical f64 columns to f32
-            for name, dtype in zip(df.columns, df.dtypes):
-                if dtype == pl.Float64:
-                    df = df.with_columns(pl.col(name).cast(pl.Float32))
-                elif dtype == pl.Int64:
-                    df = df.with_columns(pl.col(name).cast(pl.Int32))
-            dfs.append(df)
-            log_info(
-                f"Successfully imported {df.shape}: {row['image_quality_data_file']}{ext}"
-            )
+        file_path_name_schemes = [
+            # Original naming scheme (file path + file prefix + plate barcode)
+            row[DATABASE_SCHEMA["EXPERIMENT_RESULT_DIRECTORY_COLUMN"]]
+            + cfg.IMAGE_QUALITY_FILE_PREFIX
+            + "_"
+            + row[DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]],
+            # Alternative naming scheme without plate barcode (file path + file prefix)
+            row[DATABASE_SCHEMA["EXPERIMENT_RESULT_DIRECTORY_COLUMN"]]
+            + cfg.IMAGE_QUALITY_FILE_PREFIX,
+        ]
+
+        for file_path_name_scheme in file_path_name_schemes:
+            if ext := get_file_extension(file_path_name_scheme):
+                image_quality_data_file = file_path_name_scheme
+                df = read_file(image_quality_data_file, ext)
+                df = df.with_columns(
+                    pl.lit(row[DATABASE_SCHEMA["EXPERIMENT_PLATE_ACQID_COLUMN"]]).alias(
+                        "Metadata_AcqID"
+                    ),
+                    pl.lit(
+                        row[DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]]
+                    ).alias("Metadata_Barcode"),
+                )
+                # Cast all numerical f64 columns to f32
+                for name, dtype in zip(df.columns, df.dtypes):
+                    if dtype == pl.Float64:
+                        df = df.with_columns(pl.col(name).cast(pl.Float32))
+                    elif dtype == pl.Int64:
+                        df = df.with_columns(pl.col(name).cast(pl.Int32))
+                dfs.append(df)
+                log_info(
+                    f"Successfully imported {df.shape}: {image_quality_data_file}{ext}"
+                )
+                break
+        else:
+            log_warning(f"No image quality file was found in: {file_path_name_schemes}")
 
     if force_merging_columns == "keep":
         concat_method = "diagonal"  # keep all columns and fill missing values with null
@@ -236,8 +244,27 @@ def get_image_quality_data(
         )
         .sort(["Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageID"])
         # reorder columns to match desired order
-        .select(pl.col(["ImageID", "Metadata_AcqID", "Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageNumber",]),
-                pl.exclude(["ImageID", "Metadata_AcqID", "Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageNumber",])
+        .select(
+            pl.col(
+                [
+                    "ImageID",
+                    "Metadata_AcqID",
+                    "Metadata_Barcode",
+                    "Metadata_Well",
+                    "Metadata_Site",
+                    "ImageNumber",
+                ]
+            ),
+            pl.exclude(
+                [
+                    "ImageID",
+                    "Metadata_AcqID",
+                    "Metadata_Barcode",
+                    "Metadata_Well",
+                    "Metadata_Site",
+                    "ImageNumber",
+                ]
+            ),
         )
         if dfs
         else None

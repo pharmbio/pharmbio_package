@@ -108,13 +108,8 @@ def get_cell_morphology_data(
         cell_morphology_ref_df = pl.from_pandas(cell_morphology_ref_df)
         
     if aggregation_method is None:
-        aggregation_method = {
-            "cell": "median",
-            "site": "median",
-            "well": "median",
-            "plate": "mean",
-            "compound": "mean",
-        }
+        aggregation_method = cfg.AGGREGATION_METHOD_DICT
+        
     object_file_names = cfg.OBJECT_FILE_NAMES
     plate_acq_id = cfg.DATABASE_SCHEMA["EXPERIMENT_PLATE_ACQID_COLUMN"]
     plate_acq_name = cfg.DATABASE_SCHEMA["EXPERIMENT_PLATE_AQNAME_COLUMN"]
@@ -166,7 +161,9 @@ def get_cell_morphology_data(
                     for col in columns_names
                     if not re.match(unusful_col_pattern, col)
                 ],
-            ).rename({"ObjectNumber": "id"})
+            ).rename({cfg.OBJECT_ID_COLUMN: "id"})
+            
+            # Adding object type name to the end of column name
             object_name = object_file_name.split("_")[-1]
             object_feature_df.columns = [
                 f"{col}_{object_name}" for col in object_feature_df.columns
@@ -255,11 +252,13 @@ def get_cell_morphology_data(
             "Children_cytoplasm_Count_nuclei",
             "Parent_precells_cells",
             "Parent_nuclei_cytoplasm",
+            "Parent_cells_unfiltered_cells", # exist in some of the experiment
+            "Parent_nuclei_unfiltered_nuclei", # exist in some of the experiment
             "id_cells",
             "id_nuclei",
             "id_cytoplasm",
         ]
-        df_combined = df_combined.drop(drop_map)
+        df_combined = df_combined.drop([col for col in drop_map if col in df_combined.columns])
 
         # Ensure data type consistency for certain columns
         cast_cols = [
