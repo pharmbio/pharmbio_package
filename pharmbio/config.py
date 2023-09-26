@@ -38,6 +38,7 @@ DATABASE_SCHEMA = {
     "EXPERIMENT_RESULT_DIRECTORY_COLUMN": "results",
     "PLATE_LAYOUT_TABLE_NAME_ON_DB": "plate_v1",
     "PLATE_LAYOUT_BARCODE_COLUMN": "barcode",
+    "PLATE_LAYOUT_WELL_COLUMN": "well_id",
     "PLATE_COMPOUND_NAME_COLUMN": "batch_id",
 }
 
@@ -71,10 +72,12 @@ CELL_MORPHOLOGY_METADATA_TYPE = "cp-features"
 OBJECT_FILE_NAMES = ["featICF_nuclei", "featICF_cells", "featICF_cytoplasm"]
 OBJECT_ID_COLUMN = "ObjectNumber"
 OBJECT_PARENT_CELL_COLUMN = "Parent_cells"
-MORPHOLOGY_METADATA_ACQID_COLUMNS = "Metadata_AcqID"
-MORPHOLOGY_METADATA_BARCODE_COLUMNS = "Metadata_Barcode"
-MORPHOLOGY_METADATA_WELL_COLUMNS = "Metadata_Well"
-MORPHOLOGY_METADATA_SITE_COLUMNS = "Metadata_Site"
+MORPHOLOGY_METADATA_ACQID_COLUMN = "Metadata_AcqID"
+MORPHOLOGY_METADATA_BARCODE_COLUMN = "Metadata_Barcode"
+MORPHOLOGY_METADATA_WELL_COLUMN = "Metadata_Well"
+MORPHOLOGY_METADATA_SITE_COLUMN = "Metadata_Site"
+MORPHOLOGY_CELL_CYTOPLASM_COUNT_COLUMN = "Children_cytoplasm_Count"
+MORPHOLOGY_CELL_NUCLEI_COUNT_COLUMN = "Children_nuclei_Count"
 
 # --------------------- Aggregation method for each level -------------------- #
 #   value can be: mean, median, first, last, max, min                          #
@@ -92,8 +95,8 @@ AGGREGATION_METHOD_DICT = {
 # ---------------------------------------------------------------------------- #
 GROUPING_COLUMN_MAP = {
     "cell": [
-        "CellID",
-        "ImageID",
+        "cell_id",
+        "image_id",
         "Metadata_AcqID",
         "Metadata_Barcode",
         "Metadata_Well",
@@ -101,7 +104,7 @@ GROUPING_COLUMN_MAP = {
         "batch_id",
     ],
     "site": [
-        "ImageID",
+        "image_id",
         "Metadata_AcqID",
         "Metadata_Barcode",
         "Metadata_Well",
