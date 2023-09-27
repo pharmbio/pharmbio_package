@@ -1,3 +1,6 @@
+from .. import config as cfg
+
+
 def experiment_name_sql_query(experiment_name, table_name_on_db):
     """
     Executes a SQL query to retrieve experiment names from a specified table.
@@ -90,7 +93,7 @@ def plate_layout_sql_query(db_schema, plate_barcode):
         ```
     """
     return f"""
-            SELECT *
+            SELECT {', '.join(cfg.PLATE_LAYOUT_INFO)}
             FROM {db_schema['PLATE_LAYOUT_TABLE_NAME_ON_DB']}
             WHERE ({db_schema['PLATE_LAYOUT_BARCODE_COLUMN']} IN ({plate_barcode}))
             AND {db_schema['PLATE_COMPOUND_NAME_COLUMN']} <> ''

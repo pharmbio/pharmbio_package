@@ -282,15 +282,15 @@ def _reorder_dataframe_columns(df: pl.DataFrame) -> pl.DataFrame:
 
 def _merge_with_plate_info(df: pl.DataFrame) -> pl.DataFrame:
     """Merges the object dataframe with plate information.
-    
+
     Parameters:
         df (pl.DataFrame): The object dataframe containing cellular morphology features.
         plate_layout_sql_query (callable): A function that returns SQL query for fetching plate layout info.
-        
+
     Returns:
         pl.DataFrame: Dataframe with merged plate information.
     """
-    
+
     # Extract unique barcodes
     barcode_list = df[cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN].unique().to_list()
     barcode_str = ", ".join([f"'{item}'" for item in barcode_list])
@@ -303,11 +303,18 @@ def _merge_with_plate_info(df: pl.DataFrame) -> pl.DataFrame:
     df = df.join(
         df_plates,
         how="left",
-        left_on=[cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN, cfg.MORPHOLOGY_METADATA_WELL_COLUMN],
-        right_on=[cfg.DATABASE_SCHEMA["PLATE_LAYOUT_BARCODE_COLUMN"], cfg.DATABASE_SCHEMA["PLATE_LAYOUT_WELL_COLUMN"]]
+        left_on=[
+            cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN,
+            cfg.MORPHOLOGY_METADATA_WELL_COLUMN,
+        ],
+        right_on=[
+            cfg.DATABASE_SCHEMA["PLATE_LAYOUT_BARCODE_COLUMN"],
+            cfg.DATABASE_SCHEMA["PLATE_LAYOUT_WELL_COLUMN"],
+        ],
     )
 
     return df.drop_nulls(subset=cfg.DATABASE_SCHEMA["PLATE_COMPOUND_NAME_COLUMN"])
+
 
 def get_cell_morphology_data(
     cell_morphology_ref_df: Union[pl.DataFrame, pd.DataFrame],
@@ -315,6 +322,7 @@ def get_cell_morphology_data(
     aggregation_method: Optional[Dict[str, str]] = None,
     path_to_save: str = "data",
     use_gpu: bool = False,
+    save_plate_separately: bool = False,
 ):
     """
     Retrieves cell morphology data from the specified cell morphology reference DataFrame and performs aggregation at the specified level.
@@ -351,6 +359,11 @@ def get_cell_morphology_data(
     object_file_names = cfg.OBJECT_FILE_NAMES
     plate_acq_id = cfg.DATABASE_SCHEMA["EXPERIMENT_PLATE_ACQID_COLUMN"]
     plate_acq_name = cfg.DATABASE_SCHEMA["EXPERIMENT_PLATE_AQNAME_COLUMN"]
+    experiment_name = (
+        cell_morphology_ref_df.select(cfg.DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"])
+        .unique()
+        .item()
+    )
 
     # Create output directory if it doesn't exist
     saving_dir = Path(path_to_save)
@@ -360,107 +373,142 @@ def get_cell_morphology_data(
     total_iterations = cell_morphology_ref_df.height * len(object_file_names)
     progress_bar = tqdm(total=total_iterations, desc="Processing")
 
-    all_dataframes = []
-
-    for index, plate_metadata in enumerate(
-        cell_morphology_ref_df.iter_rows(named=True)
-    ):
-        # Print separator and progress info
-        separator = "\n" if index else ""
-        log_info(
-            (
-                f"{separator}{'_'*50}"
-                f"\nProcessing plate {plate_metadata[plate_acq_name]} ({index + 1} of {cell_morphology_ref_df.height}):"
-            )
+    # Check for typpe of aggregation function ans gpu
+    if use_gpu and not has_gpu():
+        raise EnvironmentError(
+            "GPU is not available on this machine. Install NVIDIA System Management Interface (nvidia-smi) to enable this check."
         )
+    aggregation_func = fa.aggregate_data_gpu if use_gpu else fa.aggregate_data_cpu
 
-        # Define and check for existing output files
-        output_filename = f"{saving_dir}/{plate_metadata[plate_acq_id]}_{plate_metadata[plate_acq_name]}.parquet"
-        if os.path.exists(output_filename):
-            log_info(f"File already exists, reading data from: {output_filename}")
-            existing_df = pl.read_parquet(output_filename)
-            all_dataframes.append(existing_df)
-            progress_bar.update(len(object_file_names))
-            continue
+    per_plate_dataframe_list = []
 
-        # Load and process feature datasets
-        object_feature_dataframes = {}
-        unusful_col_pattern = r"^(FileName|PathName|ImageNumber|Number_Object_Number)"
-        for object_file_name in object_file_names:
-            object_feature_file_path = f"{plate_metadata[cfg.DATABASE_SCHEMA['EXPERIMENT_RESULT_DIRECTORY_COLUMN']]}{object_file_name}.parquet"
-
-            # Read the parquet file and adjust column names
-            columns_names = pl.scan_parquet(object_feature_file_path).columns
-            object_feature_df = pl.read_parquet(
-                object_feature_file_path,
-                columns=[
-                    col
-                    for col in columns_names
-                    if not re.match(unusful_col_pattern, col)
-                ],
-            )
-
-            # Adding object type name to the end of column name
-            object_name = object_file_name.split("_")[-1]
-            object_feature_df.columns = [
-                f"{col}_{object_name}" for col in object_feature_df.columns
-            ]
-
-            object_feature_dataframes[object_name] = object_feature_df
+    # Check if 'all_plates' file exists before entering the loop
+    output_filename_all_plates = f"{saving_dir}/{experiment_name}_all_plates.parquet"
+    if os.path.exists(output_filename_all_plates):
+        log_info(
+            f"Combined plates file exists, reading data from: {output_filename_all_plates}"
+        )
+        return pl.read_parquet(output_filename_all_plates)
+    else:
+        for index, plate_metadata in enumerate(
+            cell_morphology_ref_df.iter_rows(named=True)
+        ):
+            # Print separator and progress info
+            separator = "\n" if index else ""
             log_info(
-                f"\tReading features {object_feature_df.shape} - {object_name}: \t{object_feature_file_path}"
+                (
+                    f"{separator}{'_'*50}"
+                    f"\nProcessing plate {plate_metadata[plate_acq_name]} ({index + 1} of {cell_morphology_ref_df.height}):"
+                )
             )
 
-            progress_bar.update(1)
+            # Define and check for existing output files
+            output_filename_per_plate = f"{saving_dir}/{plate_metadata[plate_acq_id]}_{plate_metadata[plate_acq_name]}.parquet"
+            if os.path.exists(output_filename_per_plate):
+                log_info(
+                    f"File already exists, reading data from: {output_filename_per_plate}"
+                )
+                per_plate_dataframe_list.append(
+                    pl.read_parquet(output_filename_per_plate)
+                )
+                progress_bar.update(len(object_file_names))
+                continue
 
-        # Join df dictionary (first cell -> nuclei and then -> cytoplasm)
-        joined_object_df = _join_object_dataframes(object_feature_dataframes)
-
-        # Remove '_cells' from metadata columns' name for better consistency and clarity
-        joined_object_df = _rename_joined_df_columns(joined_object_df)
-
-        # Create unique image_id and cell_id column by concatenating other columns
-        joined_object_df = _add_image_cell_id_columns(joined_object_df)
-
-        # Clean df from temporary, unused or unwanted columns
-        joined_object_df = _drop_unwanted_columns(joined_object_df)
-
-        # Ensure data type consistency for Metadata columns
-        joined_object_df = _cast_metadata_type_columns(joined_object_df)
-
-        # Ordering the columns
-        joined_object_df = _reorder_dataframe_columns(joined_object_df)
-        
-        # List of morphology columns
-        morphology_feature_cols = _get_morphology_feature_cols(joined_object_df)
-        
-        # Adding plate layout data to df
-        aggregated_data = _merge_with_plate_info(joined_object_df)
-
-        # Mapping of aggregation levels to their grouping columns
-        grouping_columns_map = cfg.GROUPING_COLUMN_MAP
-
-        if use_gpu and not has_gpu():
-            raise EnvironmentError(
-                "GPU is not available on this machine. Install NVIDIA System Management Interface (nvidia-smi) to enable this check."
+            # Load and process feature datasets
+            object_feature_dataframes = {}
+            unusful_col_pattern = (
+                r"^(FileName|PathName|ImageNumber|Number_Object_Number)"
             )
+            for object_file_name in object_file_names:
+                object_feature_file_path = f"{plate_metadata[cfg.DATABASE_SCHEMA['EXPERIMENT_RESULT_DIRECTORY_COLUMN']]}{object_file_name}.parquet"
 
-        # Iterate over the levels and aggregate data progressively
-        aggregation_func = fa.aggregate_data_gpu if use_gpu else fa.aggregate_data_cpu
-        for level in ["cell", "site", "well", "plate", "compound"]:
-            aggregated_data = aggregation_func(
-                df=aggregated_data,
-                columns_to_aggregate=morphology_feature_cols,
-                groupby_columns=grouping_columns_map[level],
-                aggregation_function=aggregation_method[level],
+                # Read the parquet file and adjust column names
+                columns_names = pl.scan_parquet(object_feature_file_path).columns
+                object_feature_df = pl.read_parquet(
+                    object_feature_file_path,
+                    columns=[
+                        col
+                        for col in columns_names
+                        if not re.match(unusful_col_pattern, col)
+                    ],
+                )
+
+                # Adding object type name to the end of column name
+                object_name = object_file_name.split("_")[-1]
+                object_feature_df.columns = [
+                    f"{col}_{object_name}" for col in object_feature_df.columns
+                ]
+
+                object_feature_dataframes[object_name] = object_feature_df
+                log_info(
+                    f"\tReading features {object_feature_df.shape} - {object_name}: \t{object_feature_file_path}"
+                )
+
+                progress_bar.update(1)
+
+            # Join df dictionary (first cell -> nuclei and then -> cytoplasm)
+            joined_object_df = _join_object_dataframes(object_feature_dataframes)
+
+            # Remove '_cells' from metadata columns' name for better consistency and clarity
+            joined_object_df = _rename_joined_df_columns(joined_object_df)
+
+            # Create unique image_id and cell_id column by concatenating other columns
+            joined_object_df = _add_image_cell_id_columns(joined_object_df)
+
+            # Clean df from temporary, unused or unwanted columns
+            joined_object_df = _drop_unwanted_columns(joined_object_df)
+
+            # Ensure data type consistency for Metadata columns
+            joined_object_df = _cast_metadata_type_columns(joined_object_df)
+
+            # Ordering the columns
+            joined_object_df = _reorder_dataframe_columns(joined_object_df)
+
+            # List of morphology columns
+            morphology_feature_cols = _get_morphology_feature_cols(joined_object_df)
+
+            # Adding plate layout data to df
+            aggregated_data = _merge_with_plate_info(joined_object_df)
+
+            # Mapping of aggregation levels to their grouping columns
+            grouping_columns_map = cfg.GROUPING_COLUMN_MAP
+
+            for level in ["cell", "site", "well", "plate"]:
+                aggregated_data = aggregation_func(
+                    df=aggregated_data,
+                    columns_to_aggregate=morphology_feature_cols,
+                    groupby_columns=grouping_columns_map[level],
+                    aggregation_function=aggregation_method[level],
+                )
+                if aggregation_level == level:
+                    break
+
+            # Write the aggregated data to a parquet file
+            if save_plate_separately:
+                aggregated_data.write_parquet(output_filename_per_plate)
+            per_plate_dataframe_list.append(aggregated_data)
+
+        if not save_plate_separately:
+            concatenated_dfs = (
+                pl.concat(per_plate_dataframe_list)
+                if len(per_plate_dataframe_list) > 1
+                else per_plate_dataframe_list[0]
             )
-            if aggregation_level == level:
-                break
-
-        # Write the aggregated data to a parquet file
-        aggregated_data.write_parquet(output_filename)
-        all_dataframes.append(aggregated_data)
+            if aggregation_level == "compound":
+                concatenated_dfs = aggregation_func(
+                    df=concatenated_dfs,
+                    columns_to_aggregate=morphology_feature_cols,
+                    groupby_columns=grouping_columns_map[aggregation_level],
+                    aggregation_function=aggregation_method[aggregation_level],
+                )
+            concatenated_dfs.write_parquet(output_filename_all_plates)
+            progress_bar.close()
+            return concatenated_dfs
 
     progress_bar.close()
 
-    return pl.concat(all_dataframes) if len(all_dataframes) > 1 else all_dataframes[0]
+    return (
+        pl.concat(per_plate_dataframe_list)
+        if len(per_plate_dataframe_list) > 1
+        else per_plate_dataframe_list[0]
+    )

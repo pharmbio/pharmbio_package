@@ -42,6 +42,36 @@ DATABASE_SCHEMA = {
     "PLATE_COMPOUND_NAME_COLUMN": "batch_id",
 }
 
+PLATE_LAYOUT_INFO = [
+    "barcode",
+    "well_id",
+    # "size",
+    # "seeded",
+    # "plate_type",
+    # "treatment",
+    # "treatment_units",
+    # "painted",
+    # "painted_type",
+    # "layout_id",
+    # "solvent",
+    # "stock_conc",
+    # "pert_type",
+    "batch_id",
+    # "cmpd_vol",
+    # "well_vol",
+    "cmpd_conc",
+    "cell_line",
+    # "cells_per_well",
+    # "batchid",
+    'compound_name',
+    "cbkid",
+    # "libid",
+    # "libtxt",
+    "smiles",
+    "inchi",
+    "inkey",
+]
+
 # ----------------------- IMAGE QUALITY METADATA SCHEMA ---------------------- #
 #  The dataframe that include the metadata for the image quality data and      #
 #  refrence to the image quality data file and is retrived from the ImageDB.   #
