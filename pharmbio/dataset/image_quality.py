@@ -1,7 +1,7 @@
 import os
 import glob
 import polars as pl
-from typing import Union, List
+from typing import Union, List, Dict
 from .. import config as cfg
 from ..config import DATABASE_SCHEMA
 
@@ -18,6 +18,95 @@ from ..utils import (
     get_file_extension,
     read_file,
 )
+
+
+def _get_image_quality_refrence_df(experiment_name: str):
+    """
+    Gets an image quality reference dataframe and associated data dictionary from the database for a given experiment name.
+
+    Returns a dataframe containing image quality metadata and plate barcodes for the given experiment, and a dictionary mapping experiment names to lists of plate barcodes.
+
+    Args:
+    experiment_name: The name of the experiment to retrieve data for
+
+    Returns:
+    image_quality_reference_df: A dataframe containing image quality metadata
+    data_dict: A dictionary mapping experiment names to lists of plate barcodes
+    """
+
+    query = experiment_metadata_sql_query(
+        experiment_name, DATABASE_SCHEMA, cfg.IMAHGE_QUALITY_METADATA_TYPE
+    )
+    image_quality_reference_df = pl.read_database(query, cfg.DB_URI)
+    data_dict = (
+        image_quality_reference_df.select(
+            [
+                DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"],
+                DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"],
+            ]
+        )
+        .groupby(DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"])
+        .agg(pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]))
+        .to_dicts()
+    )
+    return image_quality_reference_df, data_dict
+
+
+def _logging_information_image_quality_ref(
+    image_quality_reference_df: pl.DataFrame,
+    image_quality_data_dict: Dict,
+    experiment_name: str,
+    unique_project_count: int,
+):
+    """
+    Logs information about the given image quality reference dataframe, data dictionary, and experiment name.
+
+    Logs a message indicating the number of studies found for the given experiment name. Logs the data dictionary mapping experiments to plate barcodes. Logs any replicated analyses found in the dataframe.
+
+    Args:
+    image_quality_reference_df: A dataframe containing image quality metadata
+    image_quality_data_dict: A dictionary mapping experiment names to lists of plate barcodes
+    experiment_name: The name of the experiment queried
+    unique_project_count: The number of unique studies found for the experiment
+    """
+
+    if unique_project_count == 0:
+        message = f"Quering the db for {experiment_name} returned nothing."
+    elif unique_project_count > 1:
+        message = (
+            f"Quering the db for {experiment_name} found {unique_project_count} studies: "
+            f"{image_quality_reference_df.unique(DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN'])[DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN']].to_list()}"
+        )
+    else:
+        message = (
+            f"Quering the db for {experiment_name} found {unique_project_count} study: "
+            f"{image_quality_reference_df.unique(DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN'])[DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN']].to_list()}"
+        )
+    log_info(f"{message}\n{'_'*50}")
+
+    if unique_project_count != 0:
+        for i, study in enumerate(image_quality_data_dict, start=1):
+            log_info(i)
+            for value in study.values():
+                log_info("\t" + str(value))
+    log_info("\n" + "_" * 50)
+
+    grouped_replicates = image_quality_reference_df.groupby(
+        DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]
+    )
+
+    for plate_name, group in grouped_replicates:
+        if len(group) > 1:
+            log_warning(
+                (
+                    f"Analysis for the plate with barcode {plate_name} is replicated {len(group)} times with "
+                    f"{DATABASE_SCHEMA['EXPERIMENT_ANALYSIS_ID_COLUMN']} of {sorted(group[DATABASE_SCHEMA['EXPERIMENT_ANALYSIS_ID_COLUMN']].to_list())}"
+                )
+            )
+    if image_quality_reference_df.filter(
+        pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]).is_duplicated()
+    ).is_empty():
+        log_info("No replicated analysis has been found!")
 
 
 def get_image_quality_ref(
@@ -48,62 +137,16 @@ def get_image_quality_ref(
         result = get_image_quality_ref(name, drop_replication, keep_replication, filter)
         ```
     """
-    query = experiment_metadata_sql_query(
-        name, DATABASE_SCHEMA, cfg.IMAHGE_QUALITY_METADATA_TYPE
-    )
-    image_quality_reference = pl.read_database(query, cfg.DB_URI)
-    data_dict = (
-        image_quality_reference.select(
-            [
-                DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"],
-                DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"],
-            ]
-        )
-        .groupby(DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"])
-        .agg(pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]))
-        .to_dicts()
-    )
+
+    image_quality_reference, data_dict = _get_image_quality_refrence_df(name)
     unique_project_count = image_quality_reference.unique(
         DATABASE_SCHEMA["EXPERIMENT_NAME_COLUMN"]
     ).height
 
-    if unique_project_count == 0:
-        message = f"Quering the db for {name} returned nothing."
-    elif unique_project_count > 1:
-        message = (
-            f"Quering the db for {name} found {unique_project_count} studies: "
-            f"{image_quality_reference.unique(DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN'])[DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN']].to_list()}"
-        )
-    else:
-        message = (
-            f"Quering the db for {name} found {unique_project_count} study: "
-            f"{image_quality_reference.unique(DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN'])[DATABASE_SCHEMA['EXPERIMENT_NAME_COLUMN']].to_list()}"
-        )
-    log_info(f"{message}\n{'_'*50}")
-
-    if unique_project_count != 0:
-        for i, study in enumerate(data_dict, start=1):
-            log_info(i)
-            for value in study.values():
-                log_info("\t" + str(value))
-    log_info("\n" + "_" * 50)
-
-    grouped_replicates = image_quality_reference.groupby(
-        DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]
+    _logging_information_image_quality_ref(
+        image_quality_reference, data_dict, name, unique_project_count
     )
 
-    for plate_name, group in grouped_replicates:
-        if len(group) > 1:
-            log_warning(
-                (
-                    f"Analysis for the plate with barcode {plate_name} is replicated {len(group)} times with "
-                    f"{DATABASE_SCHEMA['EXPERIMENT_ANALYSIS_ID_COLUMN']} of {sorted(group[DATABASE_SCHEMA['EXPERIMENT_ANALYSIS_ID_COLUMN']].to_list())}"
-                )
-            )
-    if image_quality_reference.filter(
-        pl.col(DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]).is_duplicated()
-    ).is_empty():
-        log_info("No replicated analysis has been found!")
     if drop_replication == "Auto" and keep_replication == "None":
         # keeping the highest analysis_id value of replicated rows
         image_quality_reference = (
@@ -169,7 +212,7 @@ def get_image_quality_data(
         result = get_image_quality_data(filtered_image_quality_ref, force_merging_columns)
         ```
     """
-    
+
     # Read and process all the files in a list, skipping files not found
     dfs = []
     for row in filtered_image_quality_info.iter_rows(named=True):
