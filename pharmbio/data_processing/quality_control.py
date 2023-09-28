@@ -256,7 +256,7 @@ def flag_outlier_images(
             item for item in qc_data.columns if item.startswith(outlier_prefix)
         ]
         flagged_qc_data = qc_data.with_columns(
-            pl.max(pl.col(outlier_flaged_columns)).alias("outlier_flag")
+            pl.max_horizontal(outlier_flaged_columns).alias("outlier_flag")
         )
 
     elif method == "IQR":
@@ -298,6 +298,7 @@ def flag_outlier_images(
         outlier_flaged_columns = [
             item for item in qc_data.columns if item.startswith(outlier_prefix)
         ]
+        print("New code reached")
         flagged_qc_data = qc_data.with_columns(
             pl.max_horizontal(outlier_flaged_columns).alias("outlier_flag")
         )
