@@ -93,10 +93,10 @@ def _get_join_columns(object_type: str) -> list:
         )
 
     base_columns = [
-        cfg.MORPHOLOGY_METADATA_ACQID_COLUMN,
-        cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN,
-        cfg.MORPHOLOGY_METADATA_WELL_COLUMN,
-        cfg.MORPHOLOGY_METADATA_SITE_COLUMN,
+        cfg.METADATA_ACQID_COLUMN,
+        cfg.METADATA_BARCODE_COLUMN,
+        cfg.METADATA_WELL_COLUMN,
+        cfg.METADATA_SITE_COLUMN,
     ]
 
     join_columns = [f"{col}_{object_type}" for col in base_columns]
@@ -150,12 +150,12 @@ def _rename_joined_df_columns(df: pl.DataFrame) -> pl.DataFrame:
         pl.DataFrame: The dataframe with renamed columns.
     """
     specific_columns = [
-        cfg.MORPHOLOGY_METADATA_ACQID_COLUMN,
-        cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN,
-        cfg.MORPHOLOGY_METADATA_WELL_COLUMN,
-        cfg.MORPHOLOGY_METADATA_SITE_COLUMN,
-        cfg.MORPHOLOGY_CELL_CYTOPLASM_COUNT_COLUMN,
-        cfg.MORPHOLOGY_CELL_NUCLEI_COUNT_COLUMN,
+        cfg.METADATA_ACQID_COLUMN,
+        cfg.METADATA_BARCODE_COLUMN,
+        cfg.METADATA_WELL_COLUMN,
+        cfg.METADATA_SITE_COLUMN,
+        cfg.CELL_CYTOPLASM_COUNT_COLUMN,
+        cfg.CELL_NUCLEI_COUNT_COLUMN,
     ]
 
     rename_map = {f"{col}_cells": col for col in specific_columns}
@@ -174,13 +174,13 @@ def _add_image_cell_id_columns(df: pl.DataFrame) -> pl.DataFrame:
     """
     # Create ImageID column by concatenating other columns
     image_id = (
-        df[cfg.MORPHOLOGY_METADATA_ACQID_COLUMN]
+        df[cfg.METADATA_ACQID_COLUMN]
         + "_"
-        + df[cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN]
+        + df[cfg.METADATA_BARCODE_COLUMN]
         + "_"
-        + df[cfg.MORPHOLOGY_METADATA_WELL_COLUMN]
+        + df[cfg.METADATA_WELL_COLUMN]
         + "_"
-        + df[cfg.MORPHOLOGY_METADATA_SITE_COLUMN]
+        + df[cfg.METADATA_SITE_COLUMN]
     ).alias("image_id")
 
     df = df.with_columns([image_id])
@@ -230,10 +230,10 @@ def _cast_metadata_type_columns(df: pl.DataFrame) -> pl.DataFrame:
     """
     # Define metadata columns to cast
     metadata_columns = [
-        cfg.MORPHOLOGY_METADATA_ACQID_COLUMN,
-        cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN,
-        cfg.MORPHOLOGY_METADATA_WELL_COLUMN,
-        cfg.MORPHOLOGY_METADATA_SITE_COLUMN,
+        cfg.METADATA_ACQID_COLUMN,
+        cfg.METADATA_BARCODE_COLUMN,
+        cfg.METADATA_WELL_COLUMN,
+        cfg.METADATA_SITE_COLUMN,
     ]
 
     # Cast each metadata column to the desired data type using list comprehension
@@ -252,8 +252,8 @@ def _get_morphology_feature_cols(df: pl.DataFrame) -> List:
         pl.DataFrame: The dataframe with reordered columns.
     """
     morphology_feature_cols_list = df.select(cs.by_dtype(pl.NUMERIC_DTYPES)).columns
-    morphology_feature_cols_list.remove(cfg.MORPHOLOGY_CELL_NUCLEI_COUNT_COLUMN)
-    morphology_feature_cols_list.remove(cfg.MORPHOLOGY_CELL_CYTOPLASM_COUNT_COLUMN)
+    morphology_feature_cols_list.remove(cfg.CELL_NUCLEI_COUNT_COLUMN)
+    morphology_feature_cols_list.remove(cfg.CELL_CYTOPLASM_COUNT_COLUMN)
     return morphology_feature_cols_list
 
 
@@ -271,8 +271,8 @@ def _reorder_dataframe_columns(df: pl.DataFrame) -> pl.DataFrame:
     new_order = (
         sorted(non_numeric_cols)
         + [
-            cfg.MORPHOLOGY_CELL_NUCLEI_COUNT_COLUMN,
-            cfg.MORPHOLOGY_CELL_CYTOPLASM_COUNT_COLUMN,
+            cfg.CELL_NUCLEI_COUNT_COLUMN,
+            cfg.CELL_CYTOPLASM_COUNT_COLUMN,
         ]
         + morphology_feature_cols
     )
@@ -292,7 +292,7 @@ def _merge_with_plate_info(df: pl.DataFrame) -> pl.DataFrame:
     """
 
     # Extract unique barcodes
-    barcode_list = df[cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN].unique().to_list()
+    barcode_list = df[cfg.METADATA_BARCODE_COLUMN].unique().to_list()
     barcode_str = ", ".join([f"'{item}'" for item in barcode_list])
 
     # Fetch plate layout data from db
@@ -304,8 +304,8 @@ def _merge_with_plate_info(df: pl.DataFrame) -> pl.DataFrame:
         df_plates,
         how="left",
         left_on=[
-            cfg.MORPHOLOGY_METADATA_BARCODE_COLUMN,
-            cfg.MORPHOLOGY_METADATA_WELL_COLUMN,
+            cfg.METADATA_BARCODE_COLUMN,
+            cfg.METADATA_WELL_COLUMN,
         ],
         right_on=[
             cfg.DATABASE_SCHEMA["PLATE_LAYOUT_BARCODE_COLUMN"],

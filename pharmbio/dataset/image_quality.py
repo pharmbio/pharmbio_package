@@ -231,14 +231,6 @@ def get_image_quality_data(
             if ext := get_file_extension(file_path_name_scheme):
                 image_quality_data_file = file_path_name_scheme
                 df = read_file(image_quality_data_file, ext)
-                df = df.with_columns(
-                    pl.lit(row[DATABASE_SCHEMA["EXPERIMENT_PLATE_ACQID_COLUMN"]]).alias(
-                        "Metadata_AcqID"
-                    ),
-                    pl.lit(
-                        row[DATABASE_SCHEMA["EXPERIMENT_PLATE_BARCODE_COLUMN"]]
-                    ).alias("Metadata_Barcode"),
-                )
                 # Cast all numerical f64 columns to f32
                 for name, dtype in zip(df.columns, df.dtypes):
                     if dtype == pl.Float64:
@@ -273,41 +265,23 @@ def get_image_quality_data(
         concat_method = "vertical"  # standard vertical concatenation
 
     log_info(f"\n{'_'*50}\nQuality control data of {len(dfs)} plates imported!\n")
+
+    sorting_column_map = [
+        cfg.IMAGE_ID_COLUMN_NAME,
+        cfg.METADATA_ACQID_COLUMN,
+        cfg.METADATA_BARCODE_COLUMN,
+        cfg.METADATA_WELL_COLUMN,
+        cfg.METADATA_SITE_COLUMN,
+        cfg.METADATA_IMAGE_NUMBER_COLUMN,
+    ]
     # Concatenate all the dataframes at once and return it
     return (
         pl.concat(dfs, how=concat_method)
-        .with_columns(
-            (
-                pl.col("Metadata_AcqID").cast(pl.Utf8)
-                + "_"
-                + pl.col("Metadata_Well")
-                + "_"
-                + pl.col("Metadata_Site").cast(pl.Utf8)
-            ).alias("ImageID")
-        )
-        .sort(["Metadata_Barcode", "Metadata_Well", "Metadata_Site", "ImageID"])
-        # reorder columns to match desired order
+        .with_columns(cfg.CONSTRUCTING_IMAGE_ID)
+        .sort(cfg.IMAGE_ID_COLUMN_NAME)
         .select(
-            pl.col(
-                [
-                    "ImageID",
-                    "Metadata_AcqID",
-                    "Metadata_Barcode",
-                    "Metadata_Well",
-                    "Metadata_Site",
-                    "ImageNumber",
-                ]
-            ),
-            pl.exclude(
-                [
-                    "ImageID",
-                    "Metadata_AcqID",
-                    "Metadata_Barcode",
-                    "Metadata_Well",
-                    "Metadata_Site",
-                    "ImageNumber",
-                ]
-            ),
+            pl.col(sorting_column_map),
+            pl.exclude(sorting_column_map),
         )
         if dfs
         else None
