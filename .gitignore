@@ -1,3 +1,7 @@
 .venv/
+.vscode/
 test/
+**/__pycache__/
 pharmbio/__pycache__/
+pharmbio/**/__pycache__/
+pharmbio_package.code-workspace

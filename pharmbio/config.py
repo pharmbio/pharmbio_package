@@ -191,7 +191,6 @@ GROUPING_COLUMN_MAP = {
     ],
 }
 
-
 # ------------- Setting image quality modules to consider for QC ------------- #
 #                                                                              #
 #  posibble modules: 'Correlation', 'FocusScore', 'LocalFocusScore',           #
