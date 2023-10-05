@@ -376,7 +376,7 @@ def get_cell_morphology_data(
     # Check for typpe of aggregation function ans gpu
     if use_gpu and not has_gpu():
         raise EnvironmentError(
-            "GPU is not available on this machine. Install NVIDIA System Management Interface (nvidia-smi) to enable this check."
+            "GPU is not available on this machine."
         )
     aggregation_func = fa.aggregate_data_gpu if use_gpu else fa.aggregate_data_cpu
 
