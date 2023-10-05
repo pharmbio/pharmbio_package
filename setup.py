@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pharmbio",
-    version="0.1.5",
+    version="0.1.6",
     url="https://github.com/pharmbio/pharmbio_package",
     author="Nima Chamyani",
     author_email="nima.ch@gmail.com",
@@ -10,13 +10,14 @@ setup(
     packages=find_packages(),
     install_requires=[
         "pandas",
-        "polars",
+        "polars>=0.19.5",
         "pyarrow",
+        "ipywidgets",
         "sqlalchemy",
         "connectorx>=0.3.1",
         "psycopg2-binary",
         "plotly",
         "nbformat",
-        "tqdm"
+        "tqdm",
     ],
 )

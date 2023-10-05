@@ -1,3 +1,6 @@
+from .. import config as cfg
+
+
 def experiment_name_sql_query(experiment_name, table_name_on_db):
     """
     Executes a SQL query to retrieve experiment names from a specified table.
@@ -58,7 +61,7 @@ def experiment_metadata_sql_query(name, db_schema, experiment_type):
     return f"""
             SELECT *
             FROM {db_schema['EXPERIMENT_METADATA_TABLE_NAME_ON_DB']}
-            WHERE {db_schema['EXPERIMENT_NAME_COLUMN']} ILIKE '%%{name}%%'
+            WHERE {db_schema['EXPERIMENT_NAME_COLUMN']} LIKE '%%{name}%%'
             AND meta->>'type' = '{experiment_type}'
             AND {db_schema['EXPERIMENT_ANALYSIS_DATE_COLUMN']} IS NOT NULL
             ORDER BY {db_schema['EXPERIMENT_PLATE_BARCODE_COLUMN']}, {db_schema['EXPERIMENT_PLATE_ACQID_COLUMN']}, {db_schema['EXPERIMENT_ANALYSIS_ID_COLUMN']}
@@ -90,7 +93,7 @@ def plate_layout_sql_query(db_schema, plate_barcode):
         ```
     """
     return f"""
-            SELECT *
+            SELECT {', '.join(cfg.PLATE_LAYOUT_INFO)}
             FROM {db_schema['PLATE_LAYOUT_TABLE_NAME_ON_DB']}
             WHERE ({db_schema['PLATE_LAYOUT_BARCODE_COLUMN']} IN ({plate_barcode}))
             AND {db_schema['PLATE_COMPOUND_NAME_COLUMN']} <> ''

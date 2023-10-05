@@ -1,6 +1,7 @@
 pandas
-polars
+polars>=0.19.5
 pyarrow
+ipywidgets
 sqlalchemy
 connectorx>=0.3.1
 psycopg2-binary

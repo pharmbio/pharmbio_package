@@ -5,6 +5,7 @@ import pandas as pd
 from typing import Union, Literal
 from .logger import (
     log_error,
+    log_info,
 )
 
 
@@ -31,9 +32,6 @@ def get_file_extension(file_path_name):
         full_filename = file_path_name + ext
         if os.path.isfile(full_filename):
             return ext
-    log_error(
-        f"No file with extensions {possible_extensions} was not found for {file_path_name}."
-    )
     return None
 
 
@@ -175,8 +173,10 @@ def get_gpu_info():
 
         # Count GPUs
         gpu_count = nvidia_smi_output.count("Product Name")
+        
+        log_info(f"Found {gpu_count} gpu/s with total memory of {total_memory} MB!")
 
         return total_memory, gpu_count
     except Exception as e:
-        print(f"Failed to execute or parse nvidia-smi command. Error: {e}")
+        log_error(f"Failed to execute or parse nvidia-smi command. Error: {e}")
         return None, None
