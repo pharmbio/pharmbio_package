@@ -11,6 +11,11 @@ from ..utils import normalize_df
 from ..config import COLORS, DEFAULT_QC_MODULES
 
 
+
+def pad_with_zeros(vector, pad_width, iaxis, kwargs):
+    vector[:pad_width[0]] = 0
+    vector[-pad_width[1]:] = 0
+
 def plate_heatmap(
     df: Union[pl.DataFrame, pd.DataFrame],
     plate_names: List[str] = None,
@@ -39,7 +44,7 @@ def plate_heatmap(
 
     if plate_names is None:
         try:
-            plate_names = (
+            plate_names = sorted(
                 df.select(plate_well_columns["plates"])
                 .unique()
                 .sort(by=plate_well_columns["plates"])
@@ -57,7 +62,7 @@ def plate_heatmap(
         -len(plate_names) // subplot_num_columns
     )  # Ceiling division to get number of rows needed
 
-    titles = [f"{measurement} for {name} " for name in plate_names]
+    titles = [f"{measurement} for {name}" for name in plate_names]
 
     # Create a subplot with subplot_num_rows rows and subplot_num_columns columns
     fig = sp.make_subplots(
@@ -70,6 +75,7 @@ def plate_heatmap(
         plate_data = df.filter(pl.col(plate_well_columns["plates"]) == plate)
         heatmap_data = []
         heatmap_data_annot = []
+        rows = sorted(list({w[0] for w in wells}))
         for row in rows:
             heatmap_row = []
             heatmap_row_annot = []
@@ -94,10 +100,22 @@ def plate_heatmap(
         # Calculate the subplot row and column indices
         subplot_row = index // subplot_num_columns + 1
         subplot_col = index % subplot_num_columns + 1
-
+        heatmap_data = np.array(heatmap_data)
+        if heatmap_data.shape == (14, 22):
+            heatmap_data = np.pad(heatmap_data, ((1, 1), (1, 1)), pad_with_zeros)
+            heatmap_data_annot = [["empty"] + row + ["empty"] for row in heatmap_data_annot]
+            heatmap_data_annot = [["empty"] * 24] + heatmap_data_annot + [["empty"] * 24]
+            
+        elif heatmap_data.shape == (16, 22):
+            heatmap_data = np.pad(heatmap_data, ((0, 0), (1, 1)), pad_with_zeros)
+            heatmap_data_annot = [row + ["empty"] for row in heatmap_data_annot]
+            
+        if len(rows) == 14:
+            rows = ['A'] + rows + ['P']
+        # print(len(heatmap_data[0]), len(heatmap_data))
         heatmap = ff.create_annotated_heatmap(
             heatmap_data,
-            x=[str(i + 1) for i in range(24)],
+            x=[str(i + 1) for i in range(len(heatmap_data[0]))],
             y=rows,
             annotation_text=heatmap_data,
             colorscale="OrRd",
@@ -112,12 +130,12 @@ def plate_heatmap(
     for i in fig["layout"]["annotations"]:
         i["font"] = dict(size=12 * font_ratio)
     fig.update_xaxes(tickfont=dict(size=10 * font_ratio), nticks=48, side="bottom")
-    fig.update_yaxes(autorange="reversed", tickfont=dict(size=10))
+    fig.update_yaxes(autorange="reversed", tickfont=dict(size=10 * font_ratio))
     # fig.update_yaxes(tickfont=dict(size=10*font_ratio))
 
     # Add the new lines here to adjust annotation positions
     for ann in fig.layout.annotations:
-        ann.update(y=ann.y + 0.02)
+        ann.update(y=ann.y + 0.02 / subplot_num_rows)
 
     fig.update_layout(
         height=plot_size * subplot_num_rows,
