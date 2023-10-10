@@ -13,7 +13,7 @@ pip install pharmbio
 
 ## Usage
 
-Here's an example of how you can use this package:
+Here's an html example of how you can use this package:
 
 ```py
 from pharmbio.dataset import QC

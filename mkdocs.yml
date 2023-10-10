@@ -47,6 +47,7 @@ theme:
     - toc.integrate
     - navigation.footer
     - content.action.edit
+    - content.tooltips
   icon:
     edit: material/pencil
     view: material/eye
@@ -85,9 +86,11 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+  - abbr
+  - attr_list
   - pymdownx.snippets:
       auto_append:
         - includes/abbreviations.md
-  - abbr
+
 # Build Settings
 use_directory_urls: true
