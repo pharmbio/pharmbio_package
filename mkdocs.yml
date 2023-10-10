@@ -88,5 +88,6 @@ markdown_extensions:
   - pymdownx.snippets:
       auto_append:
         - includes/abbreviations.md
+  - abbr
 # Build Settings
 use_directory_urls: true
