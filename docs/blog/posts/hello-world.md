@@ -19,11 +19,11 @@ links:
 
 # Hello world!
 
-While post URLs are dynamically computed, the built-in blog plugin ensures that all links from and to posts and a post's assets are correct. If you want to link to a post, just use the path to the Markdown file as a link reference (links must be relative):
+While post URLs html are dynamically computed, the built-in blog plugin ensures that all links from and to posts and a post's assets are correct. If you want to link to a post, just use the path to the Markdown file as a link reference (links must be relative):
 
 [Hello World!](blog/posts/hello-world.md)
 
-Linking from a post to a page, e.g. the index, follows the same method:
+Linking HTML from a post to a page, e.g. the index, follows the same method:
 
 [Authors](../authors.md)
 
