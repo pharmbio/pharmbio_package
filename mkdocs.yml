@@ -73,7 +73,8 @@ extra:
 
 plugins:
   - blog:
-        enabled: true
+      enabled: true
+    authors: true
   - search
 
 markdown_extensions:
