@@ -48,7 +48,7 @@ theme:
     - navigation.footer
     - content.action.edit
   icon:
-    edit: material/pencil 
+    edit: material/pencil
     view: material/eye
 # Navigation Structure
 nav:
@@ -58,8 +58,8 @@ nav:
   - Developer Guide: "developer_guide.md"
   - About: "about.md"
   - Blog:
-    - blog/index.md
-    - blog/authors.md
+      - blog/index.md
+      - blog/authors.md
 
 # Additional CSS
 extra_css:
@@ -77,8 +77,17 @@ extra:
 
 # Enabling search plugin
 plugins:
-  - search
   - blog
+  - search
 
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
 # Build Settings
 use_directory_urls: true
