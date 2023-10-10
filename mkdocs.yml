@@ -64,7 +64,7 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://pharmbio.github.io/pharmbio_package/
+      link: https://github.com/pharmbio/pharmbio_package
       name: Pharmbio
 
 plugins:

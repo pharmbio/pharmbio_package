@@ -35,7 +35,7 @@ Linking HTML from a post to a page, e.g. the index, follows the same method:
 
 === "C"
 
-    ``` c
+    ``` {c .select }
     #include <stdio.h>
 
     int main(void) {
