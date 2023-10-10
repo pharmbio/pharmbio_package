@@ -68,7 +68,6 @@ plugins:
   - blog:
       blog_dir: blog
       authors: true
-      authors_file: "/home/runner/work/pharmbio_package/docs/blog/.authors.yml"
   - search:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
 
