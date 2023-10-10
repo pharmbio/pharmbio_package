@@ -1,3 +1,83 @@
-site_name: My Docs
+# Project Information
+site_name: Pharmbio Python Package
+site_url: https://pharmbio.github.io/pharmbio_package/
+site_description: Pharmbio Python Package Documentation
+site_author: "Nima Chamyani"
+repo_url: https://github.com/pharmbio/pharmbio_package
+repo_name: pharmbio/pharmbio_package
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2023 - Pharmaceutical Bioinformatics Research Group
+
 theme:
   name: material
+  language: en
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  features:
+    - search.suggest
+    - search.highlight
+    - navigation.footer
+    - content.action.edit
+  icon:
+    edit: material/pencil 
+    view: material/eye
+# Navigation Structure
+nav:
+  - Home: "index.md"
+  - Getting Started: "getting_started.md"
+  - User Guide: "user_guide.md"
+  - Developer Guide: "developer_guide.md"
+  - About: "about.md"
+  - Blog:
+    - blog/index.md
+    - blog/authors.md
+
+# Additional CSS
+extra_css:
+  - "css/custom.css"
+
+# Additional JavaScript
+extra_javascript:
+  - "js/custom.js"
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://pharmbio.github.io/pharmbio_package/
+      name: Pharmbio
+
+# Enabling search plugin
+plugins:
+  - search
+  - blog
+  - rss:
+      match_path: blog/posts/.*
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
+
+# Build Settings
+use_directory_urls: true
