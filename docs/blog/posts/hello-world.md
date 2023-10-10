@@ -1,6 +1,6 @@
 ---
 date: 2023-01-31
-authors: [nima]
+authors: [squidfunk]
 categories:
   - Hello
   - World
