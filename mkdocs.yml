@@ -16,6 +16,8 @@ theme:
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
+      primary: grey
+      accent: red
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
@@ -23,7 +25,7 @@ theme:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-
+      primary: grey
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -31,12 +33,16 @@ theme:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: grey
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
   features:
     - search.suggest
     - search.highlight
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - toc.integrate
     - navigation.footer
     - content.action.edit
   icon:
