@@ -53,10 +53,6 @@ theme:
 # Navigation Structure
 nav:
   - Home: "index.md"
-  - Getting Started: "getting_started.md"
-  - User Guide: "user_guide.md"
-  - Developer Guide: "developer_guide.md"
-  - About: "about.md"
   - Blog:
       - blog/index.md
       - blog/authors.md
@@ -75,9 +71,10 @@ extra:
       link: https://pharmbio.github.io/pharmbio_package/
       name: Pharmbio
 
-# Enabling search plugin
 plugins:
-  - blog
+  - blog:
+        enabled: true
+        authors_file: .authors.yml
   - search
 
 markdown_extensions:
