@@ -1,7 +1,6 @@
 ---
 date: 2023-01-31
-authors:
-  - [nima]
+authors: [nima]
 categories:
   - Hello
   - World
