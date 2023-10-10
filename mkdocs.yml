@@ -12,11 +12,11 @@ theme:
   name: material
   language: en
   logo: assets/logo.png
-  favicon: assets/favicon.png
+  favicon: assets/favicon_64x64.png
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
-      primary: grey
+      primary: white
       accent: red
       toggle:
         icon: material/brightness-auto
@@ -25,7 +25,8 @@ theme:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: grey
+      primary: white
+      accent: red
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -33,7 +34,8 @@ theme:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: grey
+      primary: amber
+      accent: amber
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
