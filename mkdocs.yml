@@ -4,9 +4,9 @@ site_url: https://pharmbio.github.io/pharmbio_package/
 site_description: Pharmbio Python Package Documentation
 site_author: "Nima Chamyani"
 repo_url: https://github.com/pharmbio/pharmbio_package
-repo_name: pharmbio/pharmbio_package
+repo_name: pharmbio_package
 edit_uri: edit/main/docs/
-copyright: Copyright &copy; 2023 - Pharmaceutical Bioinformatics Research Group
+copyright: Copyright &copy; 2023 - Pharmaceutical Bioinformatics Research Group, Uppsala University, Sweden
 
 theme:
   name: material
@@ -58,14 +58,6 @@ nav:
       - blog/index.md
       - blog/authors.md
 
-# Additional CSS
-extra_css:
-  - "css/custom.css"
-
-# Additional JavaScript
-extra_javascript:
-  - "js/custom.js"
-
 extra:
   social:
     - icon: fontawesome/brands/github
@@ -76,7 +68,7 @@ plugins:
   - blog:
       blog_dir: blog
       authors: true
-      authors_file: "{blog}/.authors.yml"
+      authors_file: "/home/runner/work/pharmbio_package/docs/blog/.authors.yml"
   - search:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
 
