@@ -74,7 +74,6 @@ extra:
 plugins:
   - blog:
         enabled: true
-        authors_file: .authors.yml
   - search
 
 markdown_extensions:
