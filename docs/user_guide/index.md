@@ -1,0 +1,3 @@
+# User Guide
+
+Welcome to the user guide section of the `pharmbio` documentation. This part of the guide is aimed at users who are familiar with the basic functionalities and are looking to explore its more in-depth features and capabilities. Whether you're looking to optimize your workflows, integrate our package into larger projects, or simply explore the full depth of what our package has to offer, you'll find the insights and examples here.

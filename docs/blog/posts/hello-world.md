@@ -46,8 +46,8 @@ $$\text{IQR} = Q3 - Q1$$
 
 Where:
 
-- $ Q1 $ is the 1st quartile (25th percentile)
-- $ Q3 $ is the 3rd quartile (75th percentile)
+- $Q1$ is the 1st quartile (25th percentile)
+- $Q3$ is the 3rd quartile (75th percentile)
 - To flag outliers, the function considers values that fall below the lower bound or above the upper bound:
 
 $$\text{Lower bound} = Q1 - \text{multiplier} \times \text{IQR}$$
@@ -66,10 +66,10 @@ Any data value below the lower bound or above the upper bound is considered an o
 
 **multiplier**:
 
-- Once the Interquantile Range (IQR) is calculated as $ IQR = Q3 - Q1 $, the `multiplier` is used to determine how far above Q3 and below Q1 a data point needs to be in order to be considered an outlier.
+- Once the Interquantile Range (IQR) is calculated as $IQR = Q3 - Q1$, the `multiplier` is used to determine how far above Q3 and below Q1 a data point needs to be in order to be considered an outlier.
 - Specifically, the bounds for outliers are computed as:
-  - Lower bound = $Q1 - (\text{multiplier} \times IQR)$
-  - Upper bound = $Q3 + (\text{multiplier} \times IQR)$
+    - Lower bound = $Q1 - (\text{multiplier} \times IQR)$
+    - Upper bound = $Q3 + (\text{multiplier} \times IQR)$
 - A common value for the `multiplier` in traditional statistics, when using the Interquartile Range method for outlier detection, is 1.5. However, this function allows the user to specify their own multiplier, offering flexibility in how aggressive or conservative they want the outlier detection to be. 
 - A higher multiplier will result in a broader range and fewer outliers, while a lower multiplier will create a narrower range and flag more points as outliers.
 

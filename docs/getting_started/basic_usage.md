@@ -1,3 +1,5 @@
+# Basic Usage
+
 ## 1- Setting the Database URI Environment Variable
 
 You have two options for setting the database URI as an environment variable:

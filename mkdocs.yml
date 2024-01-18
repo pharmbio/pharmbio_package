@@ -60,8 +60,33 @@ theme:
 
 # Navigation Structure
 nav:
-  - Home: "index.md"
-  - Getting Started: "Getting Started/index.md"
+  - Home: index.md
+  - Getting Started: 
+    - getting_started/index.md
+    - getting_started/installation.md
+    - getting_started/basic_usage.md
+  - User Guide:
+    - user_guide/index.md
+    - user_guide/configuration.md
+    - user_guide/default_usage.md
+    - user_guide/avanced_usage.md
+    - API Reference:
+      - user_guide/api/index.md
+      - user_guide/api/config.md
+      - user_guide/api/logger.md
+      - user_guide/api/utils.md
+      - user_guide/api/data_processing.md
+      - user_guide/api/database.md
+      - user_guide/api/dataset.md
+      - user_guide/api/visualization.md
+    - Integration: user_guide/integration/index.md
+    - Troubleshooting: user_guide/troubleshooting/index.md
+  - Contributing Guide:
+    - contribution_guide/index.md
+  - Release Notes:
+    - release_notes/index.md
+
+
   - Blog:
       - blog/index.md
 
@@ -100,6 +125,8 @@ markdown_extensions:
         - includes/abbreviations.md
   - pymdownx.arithmatex:
       generic: true
+  - toc:
+      toc_depth: 3
 
 extra_javascript:
   - javascripts/mathjax.js
