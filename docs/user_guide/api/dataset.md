@@ -6,7 +6,7 @@ This module contains functions related to handling and querying experiment-relat
 
 Retrieves a list of project names from the database, with an optional filter to return only those projects that contain a specified substring in their names.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/experiment.py#L6)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/experiment.py#L22)
 
 ```python
 def get_projects_list(lookup: str = None) -> list:
@@ -45,6 +45,68 @@ def get_projects_list(lookup: str = None) -> list:
       - The search functionality can identify partial matches in project names, making it versatile for a variety of search requirements.
       - It is essential to ensure that your workspace is connected to the correct database server as outlined in the Configuration section of the documentation, as this function depends on database access.
 
+
+### `Experiment`
+
+This class encapsulates an entire experiment, providing functionalities to load, process, and analyze various aspects of experimental data.
+
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/experiment.py#L59C1-L207C51)
+
+```python
+class Experiment:
+    def __init__(self, json_file: str):
+```
+
+#### Parameters
+
+- `json_file` (str): The path to a JSON file containing the experiment's data. This file should contain relevant information needed to initialize and populate the experiment's attributes.
+
+#### Attributes
+
+- `image_quality_data`: Stores the image quality data related to the experiment.
+- `flagged_image_quality_data`: Contains image quality data that has been flagged for quality issues.
+- `cell_morphology_data`: Holds cell morphology data from the experiment.
+- `compound_batch_ids`: A list of IDs associated with different compound batches used in the experiment.
+- `compound_outlier_info`: Information about outliers identified in the experiment's flagged image quality data.
+- `outlier_dataframe`: A DataFrame that includes detailed outlier information for the experiment's flagged image quality data.
+
+#### Methods
+
+- `get_image_quality_reference_data()`: Returns reference data for image quality analysis.
+- `get_image_quality_data()`: Retrieves and processes image quality data based on the provided reference data.
+- `get_cell_morphology_reference_data()`: Returns reference data for cell morphology analysis.
+- `get_cell_morphology_data()`: Retrieves and processes cell morphology data based on the provided reference data.
+- `get_image_quality_modules()`: Returns the image quality modules used in the experiment.
+- `get_image_quality_data_dict()`: Provides a dictionary representation of the image quality data.
+- `flag_outlier_images()`: Identifies and flags outlier images based on specified criteria.
+- `plate_heatmap(...)`: Generates heatmaps for the given plates in the experiment.
+- `well_outlier_heatmap()`: Creates a heatmap for well outliers in the experiment.
+- `quality_module_lineplot(...)`: Plots a line graph for the selected quality modules.
+- `print_setting()`: Prints the current settings and configuration of the experiment in a readable format.
+
+#### Examples
+
+To initialize an `Experiment` instance with a specified JSON file:
+```python
+experiment = Experiment('path/to/experiment_data.json')
+```
+
+To retrieve and print the image quality data:
+```python
+image_quality_data = experiment.get_image_quality_data()
+```
+
+To generate a heatmap for a specific plate:
+```python
+experiment.plate_heatmap()
+```
+
+!!! Info
+
+    - The `Experiment` class is a comprehensive tool for handling complex experimental data, particularly in the fields of cell morphology and compound analysis.
+    - It is important to provide a correctly formatted JSON file to ensure proper initialization of the experiment.
+    - Some methods of the `Experiment` class might require additional dependencies to be installed or specific configurations to be set in your working environment.
+
 ## `pharmbio.dataset.cell_morphology`
 
 This module contains functions related to handling and querying cell morphology data in the `pharmbio` package.
@@ -53,7 +115,7 @@ This module contains functions related to handling and querying cell morphology 
 
 Retrieves cell morphology references from a specified database, allowing users to specify a reference name and apply optional filtering conditions to refine the search results. This function is particularly useful for extracting specific cell morphology data based on user-defined criteria.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L22)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L22)
 
 ```python
 def get_cell_morphology_ref(
@@ -97,7 +159,7 @@ display(filtered_df)
 
 Generates a list of columns to be used for joining tables based on a specified object type in cell morphology datasets. This function is a utility intended for internal use within the `cell_morphology` module.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L74)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L74)
 
 ```python
 def _get_join_columns(object_type: str) -> list:
@@ -137,7 +199,7 @@ join_columns = _get_join_columns(object_type)
 
 Merges multiple object-related dataframes based on specified columns, facilitating the combination of different cell morphology datasets. This function is designed for internal use within the `cell_morphology` module.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L114C1-L140C6)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L114)
 
 ```python
 def _join_object_dataframes(dfs: Dict[str, pl.DataFrame]) -> pl.DataFrame:
@@ -178,7 +240,7 @@ joined_df = _join_object_dataframes(dataframes)
 
 Renames specific columns in a dataframe, typically used to simplify column names after joining multiple dataframes. This function targets columns that have had additional identifiers appended to them during the join operation, such as '_cells', and removes these parts to restore the original column names. It is intended for internal use within the `cell_morphology` module.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L143C1-L163C33)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L143)
 
 ```python
 def _rename_joined_df_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -215,7 +277,7 @@ renamed_df = _rename_joined_df_columns(joined_df)
 
 Adds unique Image ID and Cell ID columns to a dataframe. This function is designed to enhance data identification by creating distinct identifiers for each image and cell, based on the existing metadata columns. It is used internally within the `cell_morphology` module to facilitate easier tracking and analysis of cell morphology data.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L166C1-L193C38)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L166)
 
 ```python
 def _add_image_cell_id_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -252,7 +314,7 @@ df_with_ids = _add_image_cell_id_columns(original_df)
 
 Drops specified columns from a dataframe if they exist. This function is used to clean and streamline the dataframe by removing unnecessary or redundant columns, enhancing data clarity and efficiency. It is intended for internal use within the `cell_morphology` module.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L196C1-L219C67)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L196)
 
 ```python
 def _drop_unwanted_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -289,7 +351,7 @@ cleaned_df = _drop_unwanted_columns(original_df)
 
 Ensures data type consistency for specified metadata columns within a dataframe. This function is used to standardize the data types of critical metadata columns, facilitating consistent data processing and analysis. It is intended for internal use within the `cell_morphology` module.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L221C1-L242C38)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L222)
 
 ```python
 def _cast_metadata_type_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -322,12 +384,44 @@ df_with_cast_types = _cast_metadata_type_columns(original_df)
      - By casting the metadata columns to a specific type, the function reduces potential issues related to data type mismatches, such as incorrect sorting or failed join operations.
      - This step is a common practice in data preprocessing to ensure that data from various sources or formats aligns correctly for subsequent analysis.
 
+### `_get_morphology_feature_cols()`
+
+This function is designed to extract and return the names of columns in a DataFrame that correspond to morphology features.
+
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L245)
+
+```python
+def _get_morphology_feature_cols(df: pl.DataFrame) -> List[str]:
+```
+
+#### Parameters
+
+- `df` (`polars.DataFrame`): The original DataFrame from which morphology feature columns need to be identified.
+
+#### Returns
+
+- `List[str]`: A list of column names that represent morphology features in the provided DataFrame. The list excludes specific columns like the count of nuclei and cytoplasm in cells.
+
+#### Examples
+
+To obtain a list of morphology feature column names from a DataFrame:
+```python
+df = # Assume this is a pre-existing DataFrame with cell morphology data
+morphology_feature_cols = _get_morphology_feature_cols(df)
+print("Morphology Feature Columns:", morphology_feature_cols)
+```
+
+!!! Info
+
+    - The `_get_morphology_feature_cols` function is essential for preprocessing steps in cell morphology analysis, where specific feature columns need to be isolated for further analysis.
+    - It automatically filters out non-numeric columns and specific count columns to provide a refined list of relevant features.
+    - This function is especially useful in scenarios where datasets contain a mix of morphology-related and non-related data, aiding in efficient data processing and analysis.
 
 ### `_reorder_dataframe_columns()`
 
 Reorders the columns in a dataframe based on data types and specific columns. This function is designed to organize dataframe columns in a systematic manner, enhancing readability and analysis efficiency. It is intended for internal use within the `cell_morphology` module.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L260C1-L280C32)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L260)
 
 ```python
 def _reorder_dataframe_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -366,7 +460,7 @@ reordered_df = _reorder_dataframe_columns(original_df)
 
 Merges a given object dataframe with plate information, enhancing the dataset with additional details relevant to the experimental setup. This function is designed to integrate cellular morphology features with plate layout data, crucial for analysis in cell morphology studies. It is intended for internal use within the `cell_morphology` module.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L283C1-L316C83)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L283)
 
 ```python
 def _merge_with_plate_info(df: pl.DataFrame) -> pl.DataFrame:
@@ -400,17 +494,144 @@ merged_df = _merge_with_plate_info(object_df)
      - This merge process is crucial for experiments where understanding the context of each plate and well is vital for accurate analysis and interpretation.
      - The function ensures that the merged dataframe is free of null values in crucial columns, such as the compound name column, to maintain data integrity and relevance.
 
+### `get_outlier_df()`
+
+This function retrieves a DataFrame containing detailed outlier information from flagged quality control data, particularly useful in cell morphology analysis.
+
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L319C1-L364C6)
+
+```python
+def get_outlier_df(flagged_qc_df: pl.DataFrame, with_compound_info: bool = False) -> pl.DataFrame:
+```
+
+#### Parameters
+
+- `flagged_qc_df` (`polars.DataFrame`): A DataFrame containing flagged quality control data. This data is used to identify and analyze outliers in the dataset.
+- `with_compound_info` (`bool`, optional): A flag to include compound-related information in the returned DataFrame. If set to `True`, additional compound-related columns such as batch ID, SMILES notation, InChI, and InChIKey are included. Defaults to `False`.
+
+#### Returns
+
+- `polars.DataFrame`: A DataFrame containing detailed outlier information. This DataFrame includes columns for acquisition ID, barcode, well, and the number of outliers. It also features a range of integers from 1 to 10 and, optionally, compound-related information if `with_compound_info` is set to `True`.
+
+#### Examples
+
+To obtain a DataFrame with outlier information from a flagged quality control DataFrame:
+```python
+flagged_qc_df = # Assume this is a pre-existing DataFrame with flagged QC data
+outlier_df = get_outlier_df(flagged_qc_df)
+print(outlier_df)
+```
+
+To include compound information in the outlier DataFrame:
+```python
+outlier_df_with_compound = get_outlier_df(flagged_qc_df, with_compound_info=True)
+print(outlier_df_with_compound)
+```
+
+!!! Info
+
+    - The `get_outlier_df` function is crucial for detailed analysis of outliers in cell morphology datasets, allowing researchers to pinpoint specific areas of concern.
+    - The inclusion of compound information can be particularly useful for studies involving chemical screenings or compound-effect analysis.
+    - The function relies on the `polars` library for DataFrame operations, ensuring efficient and fast data manipulation.
+
+
+### `_outlier_series_to_delete()`
+
+This function is designed to identify and flag outliers in a Polars DataFrame related to cell morphology data. It determines which compounds and image IDs of sites should be considered for deletion based on specified thresholds.
+
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L367C1-L439C55)
+
+```python
+def _outlier_series_to_delete(
+    flagged_qc_df: pl.DataFrame, 
+    site_threshold: int = 6, 
+    compound_threshold: float = 0.7
+) -> (pl.Series, pl.Series, pl.DataFrame):
+```
+
+#### Parameters
+
+- `flagged_qc_df` (`polars.DataFrame`): A DataFrame containing quality control data with an 'outlier_flag' column. This data is used for identifying outliers.
+- `site_threshold` (`int`, optional): The threshold for the number of sites in a well above which all sites are considered outliers. The valid range is 1-9. Defaults to 6.
+- `compound_threshold` (`float`, optional): The threshold for the percentage of data loss at which a compound is considered for deletion. The valid range is 0-1. Defaults to 0.7.
+
+#### Returns
+
+- A tuple containing two `polars.Series` and a `polars.DataFrame`:
+    - The first series contains the identifiers of the compounds to be deleted.
+    - The second series includes image IDs of sites to be deleted.
+    - The returned DataFrame is used internally for the calculation of these series.
+
+#### Examples
+
+To identify compounds and image IDs of sites to delete based on outlier analysis:
+```python
+flagged_qc_df = # Assume this is a pre-existing DataFrame with flagged QC data
+compounds_to_delete, images_to_delete = _outlier_series_to_delete(flagged_qc_df)
+print("Compounds to delete:", compounds_to_delete)
+print("Image IDs to delete:", images_to_delete)
+```
+
+!!! Info
+
+    - The `_outlier_series_to_delete` function plays a crucial role in maintaining the integrity of cell morphology datasets by removing unreliable data points.
+    - It's important to set appropriate thresholds for both site and compound deletion to ensure accurate data analysis.
+    - This function is typically used in more advanced stages of data processing where precise outlier removal can significantly impact the quality of the analysis.
+
+### `_outlier_series_to_delete`
+
+This function is designed to identify and flag outliers in a Polars DataFrame related to cell morphology data. It determines which compounds and image IDs of sites should be considered for deletion based on specified thresholds.
+
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L442C1-L474C6)
+
+```python
+def _outlier_series_to_delete(
+    flagged_qc_df: pl.DataFrame, 
+    site_threshold: int = 6, 
+    compound_threshold: float = 0.7
+) -> (pl.Series, pl.Series, pl.DataFrame):
+```
+
+#### Parameters
+
+- `flagged_qc_df` (`polars.DataFrame`): A DataFrame containing quality control data with an 'outlier_flag' column. This data is used for identifying outliers.
+- `site_threshold` (`int`, optional): The threshold for the number of sites in a well above which all sites are considered outliers. The valid range is 1-9. Defaults to 6.
+- `compound_threshold` (`float`, optional): The threshold for the percentage of data loss at which a compound is considered for deletion. The valid range is between 0 and 1. Defaults to 0.7.
+
+#### Returns
+
+- A tuple containing two `polars.Series` and a `polars.DataFrame`:
+    - The first series contains the identifiers of the compounds to be deleted.
+    - The second series includes image IDs of sites to be deleted.
+    - The returned DataFrame is used internally for the calculation of these series.
+
+#### Examples
+
+To identify compounds and image IDs of sites to delete based on outlier analysis:
+```python
+flagged_qc_df = # Assume this is a pre-existing DataFrame with flagged QC data
+compounds_to_delete, images_to_delete = _outlier_series_to_delete(flagged_qc_df)
+```
+
+!!! Info
+
+    - The `_outlier_series_to_delete` function plays a crucial role in maintaining the integrity of cell morphology datasets by removing unreliable data points.
+    - It's important to set appropriate thresholds for both site and compound deletion to ensure accurate data analysis.
+    - This function is typically used in more advanced stages of data processing where precise outlier removal can significantly impact the quality of the analysis.
 
 
 ### `get_cell_morphology_data()`
 
-Retrieves and aggregates cell morphology data from a specified reference DataFrame, performing data processing and aggregation at various levels based on user-defined parameters. This function serves as the main entry point for handling cell morphology data in the `pharmbio` package.
+Retrieves, processes, and aggregates cell morphology data from specified reference and flagged QC dataframes, utilizing user-defined parameters for detailed and nuanced analysis. This enhanced function now offers more flexibility in handling outlier data and custom aggregation methods, making it a central feature in the `pharmbio` package for cell morphology data management.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/cell_morphology.py#L319)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L476C1-L703C6)
 
 ```python
 def get_cell_morphology_data(
     cell_morphology_ref_df: Union[pl.DataFrame, pd.DataFrame],
+    flagged_qc_df: Union[pl.DataFrame, pd.DataFrame] = None,
+    site_threshold: int = 6,
+    compound_threshold: float = 0.7,
     aggregation_level: str = "cell",
     aggregation_method: Optional[Dict[str, str]] = None,
     path_to_save: str = "data",
@@ -422,11 +643,14 @@ def get_cell_morphology_data(
 #### Parameters
 
 - `cell_morphology_ref_df` (Union[pl.DataFrame, pd.DataFrame]): The reference DataFrame containing cell morphology data.
-- `aggregation_level` (str, optional): The level at which to perform data aggregation. Can be one of "cell", "site", "well", "plate", or "compound". Defaults to "cell".
-- `aggregation_method` (Dict[str, str], optional): A dictionary specifying the aggregation method for each level (e.g., "mean", "median", "sum", "min", "max", "first", "last"). Defaults to None.
-- `path_to_save` (str, optional): The path where the aggregated data will be saved. Defaults to "data".
-- `use_gpu` (bool, optional): Flag to enable GPU acceleration. Defaults to False.
-- `save_plate_separately` (bool, optional): Flag to indicate whether to save aggregated data for each plate separately. Defaults to False.
+- `flagged_qc_df` (Union[pl.DataFrame, pd.DataFrame], optional): Quality control DataFrame with flagged outlier images. Defaults to `None`.
+- `site_threshold` (int, optional): Threshold for the number of flagged sites in a well, above which the whole well is considered for removal. Range: 1-9. Defaults to 6.
+- `compound_threshold` (float, optional): Threshold for the percentage of data loss at which a compound is considered for deletion. Range: 0-1. Defaults to 0.7.
+- `aggregation_level` (str, optional): Level at which data aggregation is performed. Options: "cell", "site", "well", "plate", "compound". Defaults to "cell".
+- `aggregation_method` (Dict[str, str], optional): Methods of aggregation for each level, such as "mean", "median", etc. Defaults to `None`.
+- `path_to_save` (str, optional): Path for saving the aggregated data. Defaults to "data".
+- `use_gpu` (bool, optional): Flag for using GPU acceleration. Defaults to `False`.
+- `save_plate_separately` (bool, optional): Indicates whether to save aggregated data for each plate separately. Defaults to `False`.
 
 #### Returns
 
@@ -434,27 +658,33 @@ def get_cell_morphology_data(
 
 #### Raises
 
-- `EnvironmentError`: Raised when GPU acceleration is requested but not available on the machine
+- `EnvironmentError`: Raised when GPU acceleration is requested but not available.
+- `ValueError`: Raised for invalid `site_threshold` or `compound_threshold` values.
 
 #### Examples
 
-To aggregate cell morphology data at the plate level:
+To aggregate cell morphology data at the plate level, considering flagged QC data:
 
 ```python
 cell_morphology_ref_df = get_cell_morphology_ref("example_reference")
-aggregated_df = get_cell_morphology_data(cell_morphology_ref_df, aggregation_level='plate')
+flagged_qc_df = # Assume pre-existing DataFrame with flagged QC data
+aggregated_df = get_cell_morphology_data(
+    cell_morphology_ref_df,
+    flagged_qc_df,
+    site_threshold=6,
+    compound_threshold=0.7,
+    aggregation_level='plate'
+)
 display(aggregated_df)
 ```
 
 !!! Info
 
-     - This function acts as a workflow for processing cell morphology data, integrating various internal functions for data loading, joining, cleaning, and aggregation.
-     - The function iterates over each plate's metadata in the reference DataFrame, processing and aggregating data according to the specified aggregation level and method.
-     - It employs GPU acceleration for data aggregation if `use_gpu` is set to `True` and a compatible GPU is available, otherwise, it defaults to CPU processing.
-     - If `save_plate_separately` is `True`, it saves the aggregated data for each plate as a separate file. Alternatively, it concatenates data from all plates into a single DataFrame.
-     - The function handles various data processing steps, such as joining different object dataframes, renaming columns for consistency, creating unique identifiers, dropping unwanted columns, casting metadata columns to the correct type, reordering columns, and merging with plate information.
-     - The final output is a comprehensive DataFrame containing aggregated cell morphology data, tailored to the specific requirements of the analysis level and method.
-     - This function is key to the `pharmbio` package's capability to handle complex cell morphology datasets, providing a streamlined and efficient way to process and analyze large volumes of data.
+    - The function can optionally incorporates outlier handling based on flagged QC data, enhancing its robustness and reliability in processing complex cell morphology datasets.
+    - It offers flexible aggregation options at multiple levels, allowing for tailored analysis suited to specific experimental needs.
+    - GPU acceleration, if available, can significantly speed up data processing, especially for large datasets.
+    - The function takes a holistic approach to data aggregation, covering various steps such as data cleaning, joining, column reordering, and merging with additional plate information.
+    - The final output is a comprehensive and highly customizable DataFrame, enabling in-depth analysis of cell morphology data.
 
 ## `pharmbio.dataset.image_quality`
 
@@ -464,7 +694,7 @@ This module in the `pharmbio` package is dedicated to handling and querying imag
 
 Retrieves an image quality reference dataframe along with an associated data dictionary from the database for a given experiment. This function is essential for obtaining image quality metadata and plate barcodes pertinent to a specific experiment, providing a foundation for image quality analysis.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/image_quality.py#L23C1-L52C49)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L23)
 
 ```python
 def _get_image_quality_reference_df(experiment_name: str) -> (pl.DataFrame, dict):
@@ -502,7 +732,7 @@ image_quality_ref_df, plate_barcodes_dict = _get_image_quality_reference_df(expe
 
 Logs detailed information about a given image quality reference dataframe, data dictionary, and experiment name. This function is primarily used for logging and debugging purposes, providing insights into the data retrieved and any anomalies or patterns observed.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/image_quality.py#L55C1-L109C59)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L55)
 
 ```python
 def _logging_information_image_quality_ref(
@@ -548,7 +778,7 @@ _logging_information_image_quality_ref(image_quality_ref_df, data_dict, "Experim
 
 Retrieves image quality reference data from the database based on the specified experiment name and optional filters. This function enables the selection and refinement of image quality data for specific experimental conditions, with capabilities to handle data replications and apply custom filters.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/image_quality.py#L112C1-L190C59)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L112)
 
 ```python
 def get_image_quality_ref(
@@ -598,7 +828,7 @@ result = get_image_quality_ref(name, drop_replication, keep_replication, filter)
 
 Retrieves and processes image quality data based on provided filtered information. This function serves as the main workflow for extracting, processing, and merging image quality data, allowing for various handling options based on user requirements.
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3cb9c60ec40851432f19ce7ecc5453e5f0b6ff1e/pharmbio/dataset/image_quality.py#L193C1-L288C6)
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L193)
 
 ```python
 def get_image_quality_data(
