@@ -84,7 +84,7 @@ def aggregate_data_gpu(
         pl.DataFrame: The aggregated DataFrame.
 
     Raises:
-        ImportError: Raised when Dask-CUDA is not available.
+        ImportError: Raised when cupy package is not available.
         RuntimeError: Raised when an unexpected error occurs during the aggregation process.
 
     Example:

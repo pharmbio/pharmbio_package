@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pharmbio",
-    version="0.1.6",
+    version="0.1.7",
     url="https://github.com/pharmbio/pharmbio_package",
     author="Nima Chamyani",
     author_email="nima.ch@gmail.com",

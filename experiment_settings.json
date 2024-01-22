@@ -1,0 +1,21 @@
+{
+    "experiment_name": "AROS-Reproducibility-MoA-Full",
+    "filter": {
+        "analysis_id": [
+            "3248",
+            "3249"
+        ]
+    },
+    "force_merging_columns": "keep",
+    "module_to_keep": [
+        "FocusScore",
+        "MaxIntensity",
+        "MeanIntensity",
+        "PowerLogLogSlope",
+        "StdIntensity"
+    ],
+    "method": "SD",
+    "site_threshold": 4,
+    "compound_threshold": 0.7,
+    "aggregation_level": "cell"
+}
