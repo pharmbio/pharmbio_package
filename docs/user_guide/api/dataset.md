@@ -578,47 +578,45 @@ print("Image IDs to delete:", images_to_delete)
     - It's important to set appropriate thresholds for both site and compound deletion to ensure accurate data analysis.
     - This function is typically used in more advanced stages of data processing where precise outlier removal can significantly impact the quality of the analysis.
 
-### `_outlier_series_to_delete`
 
-This function is designed to identify and flag outliers in a Polars DataFrame related to cell morphology data. It determines which compounds and image IDs of sites should be considered for deletion based on specified thresholds.
+### `get_comp_outlier_info()`
 
-#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L442C1-L474C6)
+This function computes outlier information for a given DataFrame that contains flagged data. It is particularly useful in the analysis of cell morphology data where identifying and quantifying outliers is crucial.
+
+#### Syntax [[source]](https://github.com/pharmbio/pharmbio_package/blob/3a4500aef3a2c0059379849bf43f6e6af396cf72/pharmbio/dataset/cell_morphology.py#L442)
 
 ```python
-def _outlier_series_to_delete(
-    flagged_qc_df: pl.DataFrame, 
-    site_threshold: int = 6, 
-    compound_threshold: float = 0.7
-) -> (pl.Series, pl.Series, pl.DataFrame):
+def get_comp_outlier_info(flagged_df: pl.DataFrame) -> pl.DataFrame:
 ```
 
 #### Parameters
 
-- `flagged_qc_df` (`polars.DataFrame`): A DataFrame containing quality control data with an 'outlier_flag' column. This data is used for identifying outliers.
-- `site_threshold` (`int`, optional): The threshold for the number of sites in a well above which all sites are considered outliers. The valid range is 1-9. Defaults to 6.
-- `compound_threshold` (`float`, optional): The threshold for the percentage of data loss at which a compound is considered for deletion. The valid range is between 0 and 1. Defaults to 0.7.
+- `flagged_df` (`polars.DataFrame`): A DataFrame containing flagged data. The data should include columns for batch identification and outlier flags.
 
 #### Returns
 
-- A tuple containing two `polars.Series` and a `polars.DataFrame`:
-    - The first series contains the identifiers of the compounds to be deleted.
-    - The second series includes image IDs of sites to be deleted.
-    - The returned DataFrame is used internally for the calculation of these series.
+- A `polars.DataFrame`: This DataFrame includes the following columns:
+    - `batch_id`: Identifier for each batch.
+    - `outlier_img_num`: The number of outlier images per compound.
+    - `total_img_num`: The total number of images per compound.
+    - `lost_data_percentage`: The percentage of data considered as lost due to outliers.
+
+The returned DataFrame is sorted in descending order based on the number of outlier images.
 
 #### Examples
 
-To identify compounds and image IDs of sites to delete based on outlier analysis:
+To calculate the outlier information for a given DataFrame:
+
 ```python
-flagged_qc_df = # Assume this is a pre-existing DataFrame with flagged QC data
-compounds_to_delete, images_to_delete = _outlier_series_to_delete(flagged_qc_df)
+flagged_df = # Assume this is a pre-existing DataFrame with flagged data
+outlier_info_df = get_comp_outlier_info(flagged_df)
 ```
 
 !!! Info
 
-    - The `_outlier_series_to_delete` function plays a crucial role in maintaining the integrity of cell morphology datasets by removing unreliable data points.
-    - It's important to set appropriate thresholds for both site and compound deletion to ensure accurate data analysis.
-    - This function is typically used in more advanced stages of data processing where precise outlier removal can significantly impact the quality of the analysis.
-
+    - The `get_comp_outlier_info` function is essential for understanding the distribution and impact of outliers in your data.
+    - It helps in the decision-making process regarding data cleaning and preprocessing, especially in large datasets with numerous compounds.
+    - Sorting the DataFrame based on the number of outlier images provides a clear view of which compounds are most affected by outliers.
 
 ### `get_cell_morphology_data()`
 
