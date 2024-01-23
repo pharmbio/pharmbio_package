@@ -66,4 +66,7 @@ cp_df = get_cell_morphology_data(cp_ref_df)
 
 ## 5- Merging Image Quality Data and Cell Morphology Data
 
-...
+To have final cell morphology dataframe simply you can pass quality control dataframe which you flagged in previous step to the `get_cell_morphology_data()` function and it will remove the flagged images:
+
+```
+cp_df = get_cell_morphology_data(cp_ref_df, flagged_qc_df)
