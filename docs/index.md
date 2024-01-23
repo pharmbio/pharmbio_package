@@ -3,7 +3,7 @@
 Pharmbio Python Package is crafted to meet the specific needs of our laboratory at Pharmbio. This tool stands at the forefront of simplifying and enhancing the data analysis workflow. Designed with efficacy, precision and user-friendliness in mind, Pharmbio is tailored for researchers, student, and bioinformaticians who work in the lab and want to make data analysis a bit easier.
 
 ### Who is Pharmbio for?
-Pharmbio is an invaluable resource for everyone that works in the Pharmaceutical Bioinformatics Research Group [Pharmbio](pharmb.io) and need  to perform different routine from quality control to ml.
+Pharmbio is an invaluable resource for everyone that works in the Pharmaceutical Bioinformatics Research Group [Pharmbio](https://pharmb.io) and need  to perform different routine from quality control to ml.
 
 ### What Does Pharmbio Offer?
 Our package is engineered to integrate seamlessly into your workflow, especially within Jupyter notebooks, offering a simplified yet powerful approach to pharmaceutical data analysis. Right now it is in its very first stage but we tried to make it with this key points in mind:
