@@ -1,0 +1,2421 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Pharmbio Python Package Documentation">
+      
+      
+        <meta name="author" content="Nima Chamyani">
+      
+      
+        <link rel="canonical" href="https://pharmbio.github.io/pharmbio_package/user_guide/api/dataset/">
+      
+      
+        <link rel="prev" href="../database/">
+      
+      
+        <link rel="next" href="../visualization/">
+      
+      
+      <link rel="icon" href="../../../assets/favicon_64x64.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.5">
+    
+    
+      
+        <title>Dataset - Pharmbio Python Package</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pharmbiodatasetexperiment" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Pharmbio Python Package" class="md-header__button md-logo" aria-label="Pharmbio Python Package" data-md-component="logo">
+      
+  <img src="../../../assets/pharmbio_package_tp.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pharmbio Python Package
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Dataset
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="amber" data-md-color-accent="amber"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pharmbio/pharmbio_package" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pharmbio_package
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting_started/" class="md-tabs__link">
+          
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+    
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contribution_guide/" class="md-tabs__link">
+          
+  
+    
+  
+  Contributing Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../release_notes/" class="md-tabs__link">
+          
+  
+    
+  
+  Release Notes
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../blog/" class="md-tabs__link">
+          
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Pharmbio Python Package" class="md-nav__button md-logo" aria-label="Pharmbio Python Package" data-md-component="logo">
+      
+  <img src="../../../assets/pharmbio_package_tp.png" alt="logo">
+
+    </a>
+    Pharmbio Python Package
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pharmbio/pharmbio_package" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pharmbio_package
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting_started/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/basic_usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Basic Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    User Guide
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../default_usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Default Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../avanced_usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Avanced Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logger/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Logger
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_processing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Dataset
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Dataset
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pharmbiodatasetexperiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      pharmbio.dataset.experiment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pharmbio.dataset.experiment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_projects_list" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_projects_list()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pharmbiodatasetcell_morphology" class="md-nav__link">
+    <span class="md-ellipsis">
+      pharmbio.dataset.cell_morphology
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pharmbio.dataset.cell_morphology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_cell_morphology_ref" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_cell_morphology_ref()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_get_join_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      _get_join_columns()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_join_object_dataframes" class="md-nav__link">
+    <span class="md-ellipsis">
+      _join_object_dataframes()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_rename_joined_df_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      _rename_joined_df_columns()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_add_image_cell_id_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      _add_image_cell_id_columns()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_drop_unwanted_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      _drop_unwanted_columns()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_cast_metadata_type_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      _cast_metadata_type_columns()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_get_morphology_feature_cols" class="md-nav__link">
+    <span class="md-ellipsis">
+      _get_morphology_feature_cols()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_reorder_dataframe_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      _reorder_dataframe_columns()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_merge_with_plate_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      _merge_with_plate_info()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_outlier_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_outlier_df()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_outlier_series_to_delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      _outlier_series_to_delete()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_comp_outlier_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_comp_outlier_info()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_cell_morphology_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_cell_morphology_data()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pharmbiodatasetimage_quality" class="md-nav__link">
+    <span class="md-ellipsis">
+      pharmbio.dataset.image_quality
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="pharmbio.dataset.image_quality">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_get_image_quality_reference_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      _get_image_quality_reference_df()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_logging_information_image_quality_ref" class="md-nav__link">
+    <span class="md-ellipsis">
+      _logging_information_image_quality_ref()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_image_quality_ref" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_image_quality_ref()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_image_quality_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_image_quality_data()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visualization/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visualization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.4 7.5c.8.8.8 2.1 0 2.8l-2.8 2.8-7.8-7.8 2.8-2.8c.8-.8 2.1-.8 2.8 0l1.8 1.8 3-3 1.4 1.4-3 3 1.8 1.8m-5.8 5.8-1.4-1.4-2.8 2.8-2.1-2.1 2.8-2.8-1.4-1.4-2.8 2.8-1.5-1.4-2.8 2.8c-.8.8-.8 2.1 0 2.8l1.8 1.8-4 4 1.4 1.4 4-4 1.8 1.8c.8.8 2.1.8 2.8 0l2.8-2.8-1.4-1.4 2.8-2.9Z"/></svg>
+  
+  <span class="md-ellipsis">
+    Integration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2 1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"/></svg>
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contribution_guide/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Contributing Guide
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../release_notes/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Release Notes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../blog/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Archive
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Archive
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../blog/archive/2023/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    2023
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Categories
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            Categories
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../blog/category/data-analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../blog/category/outlier/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Outlier
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/pharmbio/pharmbio_package/edit/main/docs/user_guide/api/dataset.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/pharmbio/pharmbio_package/raw/main/docs/user_guide/api/dataset.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
+    </a>
+  
+
+
+  <h1>Dataset</h1>
+
+<h2 id="pharmbiodatasetexperiment"><code>pharmbio.dataset.experiment</code></h2>
+<p>This module contains functions related to handling and querying experiment-related data in the <code>pharmbio</code> package.</p>
+<h3 id="get_projects_list"><code>get_projects_list()</code></h3>
+<p>Retrieves a list of project names from the database, with an optional filter to return only those projects that contain a specified substring in their names.</p>
+<h4 id="syntax-source">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/experiment.py#L22">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span> <span class="nf">get_projects_list</span><span class="p">(</span><span class="n">lookup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters">Parameters</h4>
+<ul>
+<li><code>lookup</code> (str, optional): A string to filter the project list. If provided, the function returns only those projects that contain the <code>lookup</code> string in their names. The search is case-insensitive and the <code>lookup</code> string can match any part of a project name. Defaults to <code>None</code>, which returns all project names.</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<ul>
+<li><code>list</code>: A list of project names. If <code>lookup</code> is provided, it returns a filtered list of names that contain the <code>lookup</code> string. If <code>lookup</code> is <code>None</code>, it returns all project names.</li>
+</ul>
+<h4 id="examples">Examples</h4>
+<ol>
+<li>
+<p><strong>Retrieving All Projects:</strong>
+   To get a complete list of all projects:
+   <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">project_list</span> <span class="o">=</span> <span class="n">get_projects_list</span><span class="p">()</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">project_list</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Output: [&#39;Project A&#39;, &#39;Project B&#39;, &#39;Project C&#39;, ...]</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Retrieving Filtered Projects:</strong>
+   To get a list of projects that include a specific substring (e.g., 'aros'):
+   <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">filtered_list</span> <span class="o">=</span> <span class="n">get_projects_list</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="s1">&#39;aros&#39;</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">filtered_list</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Output might include: [&#39;AROS-CP&#39;, &#39;AROS-Reproducibility-MoA-Full&#39;, ...]</span>
+</span></code></pre></div></p>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function performs a case-insensitive search when the <code>lookup</code> parameter is used.</li>
+<li>The search functionality can identify partial matches in project names, making it versatile for a variety of search requirements.</li>
+<li>It is essential to ensure that your workspace is connected to the correct database server as outlined in the Configuration section of the documentation, as this function depends on database access.</li>
+</ul>
+</div>
+<h3 id="experiment"><code>Experiment</code></h3>
+<p>This class encapsulates an entire experiment, providing functionalities to load, process, and analyze various aspects of experimental data.</p>
+<h4 id="syntax-source_1">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/experiment.py#L59C1-L207C51">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span> <span class="nc">Experiment</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span></code></pre></div>
+<h4 id="parameters_1">Parameters</h4>
+<ul>
+<li><code>json_file</code> (str): The path to a JSON file containing the experiment's data. This file should contain relevant information needed to initialize and populate the experiment's attributes.</li>
+</ul>
+<h4 id="attributes">Attributes</h4>
+<ul>
+<li><code>image_quality_data</code>: Stores the image quality data related to the experiment.</li>
+<li><code>flagged_image_quality_data</code>: Contains image quality data that has been flagged for quality issues.</li>
+<li><code>cell_morphology_data</code>: Holds cell morphology data from the experiment.</li>
+<li><code>compound_batch_ids</code>: A list of IDs associated with different compound batches used in the experiment.</li>
+<li><code>compound_outlier_info</code>: Information about outliers identified in the experiment's flagged image quality data.</li>
+<li><code>outlier_dataframe</code>: A DataFrame that includes detailed outlier information for the experiment's flagged image quality data.</li>
+</ul>
+<h4 id="methods">Methods</h4>
+<ul>
+<li><code>get_image_quality_reference_data()</code>: Returns reference data for image quality analysis.</li>
+<li><code>get_image_quality_data()</code>: Retrieves and processes image quality data based on the provided reference data.</li>
+<li><code>get_cell_morphology_reference_data()</code>: Returns reference data for cell morphology analysis.</li>
+<li><code>get_cell_morphology_data()</code>: Retrieves and processes cell morphology data based on the provided reference data.</li>
+<li><code>get_image_quality_modules()</code>: Returns the image quality modules used in the experiment.</li>
+<li><code>get_image_quality_data_dict()</code>: Provides a dictionary representation of the image quality data.</li>
+<li><code>flag_outlier_images()</code>: Identifies and flags outlier images based on specified criteria.</li>
+<li><code>plate_heatmap(...)</code>: Generates heatmaps for the given plates in the experiment.</li>
+<li><code>well_outlier_heatmap()</code>: Creates a heatmap for well outliers in the experiment.</li>
+<li><code>quality_module_lineplot(...)</code>: Plots a line graph for the selected quality modules.</li>
+<li><code>print_setting()</code>: Prints the current settings and configuration of the experiment in a readable format.</li>
+</ul>
+<h4 id="examples_1">Examples</h4>
+<p>To initialize an <code>Experiment</code> instance with a specified JSON file:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">experiment</span> <span class="o">=</span> <span class="n">Experiment</span><span class="p">(</span><span class="s1">&#39;path/to/experiment_data.json&#39;</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p>To retrieve and print the image quality data:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">image_quality_data</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">get_image_quality_data</span><span class="p">()</span>
+</span></code></pre></div></p>
+<p>To generate a heatmap for a specific plate:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">experiment</span><span class="o">.</span><span class="n">plate_heatmap</span><span class="p">()</span>
+</span></code></pre></div></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The <code>Experiment</code> class is a comprehensive tool for handling complex experimental data, particularly in the fields of cell morphology and compound analysis.</li>
+<li>It is important to provide a correctly formatted JSON file to ensure proper initialization of the experiment.</li>
+<li>Some methods of the <code>Experiment</code> class might require additional dependencies to be installed or specific configurations to be set in your working environment.</li>
+</ul>
+</div>
+<h2 id="pharmbiodatasetcell_morphology"><code>pharmbio.dataset.cell_morphology</code></h2>
+<p>This module contains functions related to handling and querying cell morphology data in the <code>pharmbio</code> package.</p>
+<h3 id="get_cell_morphology_ref"><code>get_cell_morphology_ref()</code></h3>
+<p>Retrieves cell morphology references from a specified database, allowing users to specify a reference name and apply optional filtering conditions to refine the search results. This function is particularly useful for extracting specific cell morphology data based on user-defined criteria.</p>
+<h4 id="syntax-source_2">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L22">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span> <span class="nf">get_cell_morphology_ref</span><span class="p">(</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="nb">filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_2">Parameters</h4>
+<ul>
+<li><code>name</code> (str): The name of the cell morphology reference to be retrieved. This is a mandatory parameter.</li>
+<li><code>filter</code> (dict, optional): A dictionary specifying filter conditions for the query. Each key represents a column name, and its corresponding value is a list of strings to match in that column. The filter uses logical OR for values under the same key and logical AND across different keys. Defaults to <code>None</code>, indicating no filter will be applied.</li>
+</ul>
+<h4 id="returns_1">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: A pandas-like DataFrame containing the filtered cell morphology references. The DataFrame's structure depends on the database schema and the applied filter.</li>
+</ul>
+<h4 id="examples_2">Examples</h4>
+<p>Retrieve a specific cell morphology reference with optional filtering:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;example_reference&quot;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="s2">&quot;column1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;value_1&quot;</span><span class="p">,</span> <span class="s2">&quot;value2&quot;</span><span class="p">],</span>  <span class="c1"># Values combined with OR within the same key</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="s2">&quot;column2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;value3&quot;</span><span class="p">]</span>              <span class="c1"># Different keys combined with AND</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">filtered_df</span> <span class="o">=</span> <span class="n">get_cell_morphology_ref</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">filter</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">display</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function constructs a SQL query using internal configuration parameters such as the database schema and cell morphology metadata type.</li>
+<li>It executes the query against the database specified in the configuration, retrieving relevant data based on the provided <code>name</code> and <code>filter</code>.</li>
+<li>When a filter is provided, the function applies the filter conditions iteratively to the DataFrame, allowing for complex query constructions.</li>
+<li>Ensure that your workspace is properly configured for database connectivity as outlined in the Configuration section of the documentation.</li>
+</ul>
+</div>
+<h3 id="_get_join_columns"><code>_get_join_columns()</code></h3>
+<p>Generates a list of columns to be used for joining tables based on a specified object type in cell morphology datasets. This function is a utility intended for internal use within the <code>cell_morphology</code> module.</p>
+<h4 id="syntax-source_3">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L74">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">def</span> <span class="nf">_get_join_columns</span><span class="p">(</span><span class="n">object_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_3">Parameters</h4>
+<ul>
+<li><code>object_type</code> (str): The type of the object. Must be one of <code>'cells'</code>, <code>'cytoplasm'</code>, or <code>'nuclei'</code>. This parameter determines the set of columns relevant for the join operation in cell morphology datasets.</li>
+</ul>
+<h4 id="returns_2">Returns</h4>
+<ul>
+<li><code>list</code>: A list of column names to join on. These columns are dynamically determined based on the <code>object_type</code>.</li>
+</ul>
+<h4 id="raises">Raises</h4>
+<ul>
+<li><code>ValueError</code>: This error is raised if the <code>object_type</code> is not one of the allowed types ('cells', 'cytoplasm', 'nuclei').</li>
+</ul>
+<h4 id="examples_3">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Example of an internal call within the module</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">object_type</span> <span class="o">=</span> <span class="s1">&#39;cells&#39;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">join_columns</span> <span class="o">=</span> <span class="n">_get_join_columns</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function dynamically determines the allowed object types from from <code>OBJECT_FILE_NAMES</code> object located in in <code>pharmbio.config</code> .</li>
+<li>It constructs the list of join columns based on the provided <code>object_type</code>, ensuring that the resulting list is specific to the context of the object type.</li>
+<li>This function is designed for internal use within the module, providing support for complex data operations involving cell morphology datasets.</li>
+<li>Proper understanding of the database schema and configuration (as outlined in <code>pharmbio.config</code>) is necessary to effectively utilize this function.</li>
+</ul>
+</div>
+<h3 id="_join_object_dataframes"><code>_join_object_dataframes()</code></h3>
+<p>Merges multiple object-related dataframes based on specified columns, facilitating the combination of different cell morphology datasets. This function is designed for internal use within the <code>cell_morphology</code> module.</p>
+<h4 id="syntax-source_4">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L114">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">def</span> <span class="nf">_join_object_dataframes</span><span class="p">(</span><span class="n">dfs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_4">Parameters</h4>
+<ul>
+<li><code>dfs</code> (Dict[str, pl.DataFrame]): A dictionary containing dataframes keyed by object type (<code>'cells'</code>, <code>'cytoplasm'</code>, <code>'nuclei'</code>). Each key corresponds to an object type and its associated dataframe.</li>
+</ul>
+<h4 id="returns_3">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The resulting dataframe after joining the specified dataframes. This dataframe combines the data from the different object types into a single unified structure.</li>
+</ul>
+<h4 id="examples_4">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Example of internal usage within the module</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">dataframes</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="s2">&quot;cells&quot;</span><span class="p">:</span> <span class="n">cells_df</span><span class="p">,</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="s2">&quot;nuclei&quot;</span><span class="p">:</span> <span class="n">nuclei_df</span><span class="p">,</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="s2">&quot;cytoplasm&quot;</span><span class="p">:</span> <span class="n">cytoplasm_df</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">}</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">joined_df</span> <span class="o">=</span> <span class="n">_join_object_dataframes</span><span class="p">(</span><span class="n">dataframes</span><span class="p">)</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1"># joined_df is the combined dataframe of cells, nuclei, and cytoplasm data</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function performs a series of join operations on the dataframes provided in the <code>dfs</code> dictionary.</li>
+<li>It uses the <code>_get_join_columns</code> function to determine the appropriate columns to join on for each object type.</li>
+<li>The join operations are executed in a specific order to ensure correct alignment and integration of the data across different cell morphology datasets.</li>
+<li>This function is crucial for scenarios where data from multiple cell components (cells, nuclei, cytoplasm) need to be combined for comprehensive analysis.</li>
+<li>As an internal utility function, it plays a key role in facilitating complex data manipulations within the cell morphology module.</li>
+</ul>
+</div>
+<h3 id="_rename_joined_df_columns"><code>_rename_joined_df_columns()</code></h3>
+<p>Renames specific columns in a dataframe, typically used to simplify column names after joining multiple dataframes. This function targets columns that have had additional identifiers appended to them during the join operation, such as '_cells', and removes these parts to restore the original column names. It is intended for internal use within the <code>cell_morphology</code> module.</p>
+<h4 id="syntax-source_5">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L143">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span> <span class="nf">_rename_joined_df_columns</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_5">Parameters</h4>
+<ul>
+<li><code>df</code> (pl.DataFrame): The dataframe whose columns are to be renamed. This dataframe is typically the result of a join operation that has appended additional identifiers to certain column names.</li>
+</ul>
+<h4 id="returns_4">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The dataframe with its specific columns renamed. This renaming process removes appended parts like '_cells', returning the dataframe to a more standard column naming convention.</li>
+</ul>
+<h4 id="examples_5">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Example of internal usage within the module</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">joined_df</span> <span class="o">=</span> <span class="n">_join_object_dataframes</span><span class="p">(</span><span class="n">dataframes</span><span class="p">)</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">renamed_df</span> <span class="o">=</span> <span class="n">_rename_joined_df_columns</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># renamed_df now has simplified column names, removing appended parts from the join operation</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function focuses on a predefined set of specific columns that are known to undergo renaming during join operations.</li>
+<li>It creates a mapping (rename_map) to translate from the joined column names back to the original column names.</li>
+<li>This renaming is crucial for maintaining consistency and clarity in the dataframe, especially after complex join operations.</li>
+<li>The function is an integral part of data preprocessing within the cell morphology module, ensuring that dataframes are kept in a standardized and easily interpretable format.</li>
+</ul>
+</div>
+<h3 id="_add_image_cell_id_columns"><code>_add_image_cell_id_columns()</code></h3>
+<p>Adds unique Image ID and Cell ID columns to a dataframe. This function is designed to enhance data identification by creating distinct identifiers for each image and cell, based on the existing metadata columns. It is used internally within the <code>cell_morphology</code> module to facilitate easier tracking and analysis of cell morphology data.</p>
+<h4 id="syntax-source_6">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L166">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">def</span> <span class="nf">_add_image_cell_id_columns</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_6">Parameters</h4>
+<ul>
+<li><code>df</code> (pl.DataFrame): The original dataframe to which the new ID columns will be added. This dataframe should contain metadata columns that are used to generate the unique identifiers.</li>
+</ul>
+<h4 id="returns_5">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The modified dataframe with two new columns: 'image_id' and 'cell_id'. These columns represent unique identifiers for each image and cell, respectively.</li>
+</ul>
+<h4 id="examples_6">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Example of internal usage within the module</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">original_df</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># some dataframe with required metadata columns</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">df_with_ids</span> <span class="o">=</span> <span class="n">_add_image_cell_id_columns</span><span class="p">(</span><span class="n">original_df</span><span class="p">)</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># df_with_ids now contains &#39;image_id&#39; and &#39;cell_id&#39; columns</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function constructs the 'image_id' column by concatenating several metadata columns: acquisition ID, barcode, well, and site. This concatenated string uniquely identifies each image.</li>
+<li>The 'cell_id' column is created by appending the cell object number to the 'image_id', providing a unique identifier for each cell within an image.</li>
+<li>These additional columns are crucial for tasks that require tracking and analysis at the level of individual images and cells.</li>
+<li>The function enhances data organization and accessibility, making it easier to reference specific images or cells in complex datasets.</li>
+</ul>
+</div>
+<h3 id="_drop_unwanted_columns"><code>_drop_unwanted_columns()</code></h3>
+<p>Drops specified columns from a dataframe if they exist. This function is used to clean and streamline the dataframe by removing unnecessary or redundant columns, enhancing data clarity and efficiency. It is intended for internal use within the <code>cell_morphology</code> module.</p>
+<h4 id="syntax-source_7">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L196">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span> <span class="nf">_drop_unwanted_columns</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_7">Parameters</h4>
+<ul>
+<li><code>df</code> (pl.DataFrame): The dataframe from which the specified columns are to be dropped. This dataframe may contain a variety of columns, some of which are not required for further analysis or operations.</li>
+</ul>
+<h4 id="returns_6">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The modified dataframe with specified unwanted columns removed.</li>
+</ul>
+<h4 id="examples_7">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Example of internal usage within the module</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">original_df</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># some dataframe with a mix of required and unwanted columns</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="n">cleaned_df</span> <span class="o">=</span> <span class="n">_drop_unwanted_columns</span><span class="p">(</span><span class="n">original_df</span><span class="p">)</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># cleaned_df is now free from specified unwanted columns</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function targets a predefined list of columns to be dropped, which are identified as unnecessary for the dataset's intended use.</li>
+<li>These columns might include metadata or derived attributes that are redundant or irrelevant for specific analyses or data processing tasks.</li>
+<li>By removing these columns, the function helps maintain a focused and efficient dataset, facilitating more effective data handling and analysis.</li>
+<li>This process of dropping unwanted columns is a common practice in data preprocessing, especially in large datasets with complex structures.</li>
+</ul>
+</div>
+<h3 id="_cast_metadata_type_columns"><code>_cast_metadata_type_columns()</code></h3>
+<p>Ensures data type consistency for specified metadata columns within a dataframe. This function is used to standardize the data types of critical metadata columns, facilitating consistent data processing and analysis. It is intended for internal use within the <code>cell_morphology</code> module.</p>
+<h4 id="syntax-source_8">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L222">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">def</span> <span class="nf">_cast_metadata_type_columns</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_8">Parameters</h4>
+<ul>
+<li><code>df</code> (pl.DataFrame): The dataframe whose metadata columns are to be cast to the correct data type. This dataframe typically contains various metadata fields essential for analysis.</li>
+</ul>
+<h4 id="returns_7">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The modified dataframe with specified metadata columns cast to the correct data type.</li>
+</ul>
+<h4 id="examples_8">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Example of internal usage within the module</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">original_df</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># some dataframe with metadata columns</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">df_with_cast_types</span> <span class="o">=</span> <span class="n">_cast_metadata_type_columns</span><span class="p">(</span><span class="n">original_df</span><span class="p">)</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># df_with_cast_types has metadata columns standardized to the correct data type</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function focuses on a set of predefined metadata columns crucial for data analysis.</li>
+<li>These columns are cast to a uniform data type (UTF-8 string) to ensure consistency across the dataset.</li>
+<li>Standardizing the data types of metadata columns is essential for reliable data processing, particularly when these columns are used in operations like joins, filtering, or aggregation.</li>
+<li>By casting the metadata columns to a specific type, the function reduces potential issues related to data type mismatches, such as incorrect sorting or failed join operations.</li>
+<li>This step is a common practice in data preprocessing to ensure that data from various sources or formats aligns correctly for subsequent analysis.</li>
+</ul>
+</div>
+<h3 id="_get_morphology_feature_cols"><code>_get_morphology_feature_cols()</code></h3>
+<p>This function is designed to extract and return the names of columns in a DataFrame that correspond to morphology features.</p>
+<h4 id="syntax-source_9">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L245">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">def</span> <span class="nf">_get_morphology_feature_cols</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span></code></pre></div>
+<h4 id="parameters_9">Parameters</h4>
+<ul>
+<li><code>df</code> (<code>polars.DataFrame</code>): The original DataFrame from which morphology feature columns need to be identified.</li>
+</ul>
+<h4 id="returns_8">Returns</h4>
+<ul>
+<li><code>List[str]</code>: A list of column names that represent morphology features in the provided DataFrame. The list excludes specific columns like the count of nuclei and cytoplasm in cells.</li>
+</ul>
+<h4 id="examples_9">Examples</h4>
+<p>To obtain a list of morphology feature column names from a DataFrame:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">df</span> <span class="o">=</span> <span class="c1"># Assume this is a pre-existing DataFrame with cell morphology data</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">morphology_feature_cols</span> <span class="o">=</span> <span class="n">_get_morphology_feature_cols</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Morphology Feature Columns:&quot;</span><span class="p">,</span> <span class="n">morphology_feature_cols</span><span class="p">)</span>
+</span></code></pre></div></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The <code>_get_morphology_feature_cols</code> function is essential for preprocessing steps in cell morphology analysis, where specific feature columns need to be isolated for further analysis.</li>
+<li>It automatically filters out non-numeric columns and specific count columns to provide a refined list of relevant features.</li>
+<li>This function is especially useful in scenarios where datasets contain a mix of morphology-related and non-related data, aiding in efficient data processing and analysis.</li>
+</ul>
+</div>
+<h3 id="_reorder_dataframe_columns"><code>_reorder_dataframe_columns()</code></h3>
+<p>Reorders the columns in a dataframe based on data types and specific columns. This function is designed to organize dataframe columns in a systematic manner, enhancing readability and analysis efficiency. It is intended for internal use within the <code>cell_morphology</code> module.</p>
+<h4 id="syntax-source_10">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L260">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">def</span> <span class="nf">_reorder_dataframe_columns</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_10">Parameters</h4>
+<ul>
+<li><code>df</code> (pl.DataFrame): The original dataframe whose columns are to be reordered.</li>
+</ul>
+<h4 id="returns_9">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The dataframe with its columns reordered. The reordering is based on a predefined logic that categorizes columns by their data type and relevance.</li>
+</ul>
+<h4 id="examples_10">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># Example of internal usage within the module</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">original_df</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># some dataframe with various columns</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">reordered_df</span> <span class="o">=</span> <span class="n">_reorder_dataframe_columns</span><span class="p">(</span><span class="n">original_df</span><span class="p">)</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1"># reordered_df has its columns systematically organized</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function first identifies morphology feature columns using <code>_get_morphology_feature_cols</code>.</li>
+<li>It then segregates non-numeric columns and sorts them alphabetically.</li>
+<li>The new column order starts with sorted non-numeric columns, followed by specific count columns (like <code>CELL_NUCLEI_COUNT_COLUMN</code> and <code>CELL_CYTOPLASM_COUNT_COLUMN</code> which are located in config settings), and finally includes the morphology feature columns.</li>
+<li>This systematic reordering of columns is crucial for maintaining a consistent structure across different dataframes within the module, facilitating easier data manipulation and analysis.</li>
+<li>The reorganization enhances the clarity of the dataframe, making it more intuitive to work with, especially when dealing with large and complex datasets.</li>
+<li>By focusing on data types and specific columns, this function ensures that the most critical and relevant data is easily accessible and comprehensible.</li>
+</ul>
+</div>
+<h3 id="_merge_with_plate_info"><code>_merge_with_plate_info()</code></h3>
+<p>Merges a given object dataframe with plate information, enhancing the dataset with additional details relevant to the experimental setup. This function is designed to integrate cellular morphology features with plate layout data, crucial for analysis in cell morphology studies. It is intended for internal use within the <code>cell_morphology</code> module.</p>
+<h4 id="syntax-source_11">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L283">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">def</span> <span class="nf">_merge_with_plate_info</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_11">Parameters</h4>
+<ul>
+<li><code>df</code> (pl.DataFrame): The original object dataframe containing cellular morphology features.</li>
+<li><code>plate_layout_sql_query</code> (callable): A function that returns an SQL query for fetching plate layout information. This parameter is typically configured within the function.</li>
+</ul>
+<h4 id="returns_10">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The dataframe resulting from merging the original dataframe with plate layout information.</li>
+</ul>
+<h4 id="examples_11">Examples</h4>
+<p>Usage of this function typically occurs internally within the <code>cell_morphology</code> module. Here is an example scenario of its use:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># Example of internal usage within the module</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="n">object_df</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># some dataframe with cellular morphology features</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="n">merged_df</span> <span class="o">=</span> <span class="n">_merge_with_plate_info</span><span class="p">(</span><span class="n">object_df</span><span class="p">)</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="c1"># merged_df now contains both cellular morphology features and plate layout information</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function starts by extracting unique barcodes from the dataframe to identify the relevant plates.</li>
+<li>It then fetches plate layout data from the database using a provided SQL query, which is tailored to include only the plates of interest based on their barcodes.</li>
+<li>The object dataframe and plate layout dataframe are merged on barcode and well information, integrating detailed plate data with the cellular features.</li>
+<li>This merge process is crucial for experiments where understanding the context of each plate and well is vital for accurate analysis and interpretation.</li>
+<li>The function ensures that the merged dataframe is free of null values in crucial columns, such as the compound name column, to maintain data integrity and relevance.</li>
+</ul>
+</div>
+<h3 id="get_outlier_df"><code>get_outlier_df()</code></h3>
+<p>This function retrieves a DataFrame containing detailed outlier information from flagged quality control data, particularly useful in cell morphology analysis.</p>
+<h4 id="syntax-source_12">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L319C1-L364C6">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">def</span> <span class="nf">get_outlier_df</span><span class="p">(</span><span class="n">flagged_qc_df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">with_compound_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_12">Parameters</h4>
+<ul>
+<li><code>flagged_qc_df</code> (<code>polars.DataFrame</code>): A DataFrame containing flagged quality control data. This data is used to identify and analyze outliers in the dataset.</li>
+<li><code>with_compound_info</code> (<code>bool</code>, optional): A flag to include compound-related information in the returned DataFrame. If set to <code>True</code>, additional compound-related columns such as batch ID, SMILES notation, InChI, and InChIKey are included. Defaults to <code>False</code>.</li>
+</ul>
+<h4 id="returns_11">Returns</h4>
+<ul>
+<li><code>polars.DataFrame</code>: A DataFrame containing detailed outlier information. This DataFrame includes columns for acquisition ID, barcode, well, and the number of outliers. It also features a range of integers from 1 to 10 and, optionally, compound-related information if <code>with_compound_info</code> is set to <code>True</code>.</li>
+</ul>
+<h4 id="examples_12">Examples</h4>
+<p>To obtain a DataFrame with outlier information from a flagged quality control DataFrame:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">flagged_qc_df</span> <span class="o">=</span> <span class="c1"># Assume this is a pre-existing DataFrame with flagged QC data</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">outlier_df</span> <span class="o">=</span> <span class="n">get_outlier_df</span><span class="p">(</span><span class="n">flagged_qc_df</span><span class="p">)</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">outlier_df</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p>To include compound information in the outlier DataFrame:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">outlier_df_with_compound</span> <span class="o">=</span> <span class="n">get_outlier_df</span><span class="p">(</span><span class="n">flagged_qc_df</span><span class="p">,</span> <span class="n">with_compound_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">outlier_df_with_compound</span><span class="p">)</span>
+</span></code></pre></div></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The <code>get_outlier_df</code> function is crucial for detailed analysis of outliers in cell morphology datasets, allowing researchers to pinpoint specific areas of concern.</li>
+<li>The inclusion of compound information can be particularly useful for studies involving chemical screenings or compound-effect analysis.</li>
+<li>The function relies on the <code>polars</code> library for DataFrame operations, ensuring efficient and fast data manipulation.</li>
+</ul>
+</div>
+<h3 id="_outlier_series_to_delete"><code>_outlier_series_to_delete()</code></h3>
+<p>This function is designed to identify and flag outliers in a Polars DataFrame related to cell morphology data. It determines which compounds and image IDs of sites should be considered for deletion based on specified thresholds.</p>
+<h4 id="syntax-source_13">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L367C1-L439C55">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="k">def</span> <span class="nf">_outlier_series_to_delete</span><span class="p">(</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>    <span class="n">flagged_qc_df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> 
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>    <span class="n">site_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> 
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>    <span class="n">compound_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+</span></code></pre></div>
+<h4 id="parameters_13">Parameters</h4>
+<ul>
+<li><code>flagged_qc_df</code> (<code>polars.DataFrame</code>): A DataFrame containing quality control data with an 'outlier_flag' column. This data is used for identifying outliers.</li>
+<li><code>site_threshold</code> (<code>int</code>, optional): The threshold for the number of sites in a well above which all sites are considered outliers. The valid range is 1-9. Defaults to 6.</li>
+<li><code>compound_threshold</code> (<code>float</code>, optional): The threshold for the percentage of data loss at which a compound is considered for deletion. The valid range is 0-1. Defaults to 0.7.</li>
+</ul>
+<h4 id="returns_12">Returns</h4>
+<ul>
+<li>A tuple containing two <code>polars.Series</code> and a <code>polars.DataFrame</code>:<ul>
+<li>The first series contains the identifiers of the compounds to be deleted.</li>
+<li>The second series includes image IDs of sites to be deleted.</li>
+<li>The returned DataFrame is used internally for the calculation of these series.</li>
+</ul>
+</li>
+</ul>
+<h4 id="examples_13">Examples</h4>
+<p>To identify compounds and image IDs of sites to delete based on outlier analysis:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">flagged_qc_df</span> <span class="o">=</span> <span class="c1"># Assume this is a pre-existing DataFrame with flagged QC data</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="n">compounds_to_delete</span><span class="p">,</span> <span class="n">images_to_delete</span> <span class="o">=</span> <span class="n">_outlier_series_to_delete</span><span class="p">(</span><span class="n">flagged_qc_df</span><span class="p">)</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Compounds to delete:&quot;</span><span class="p">,</span> <span class="n">compounds_to_delete</span><span class="p">)</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Image IDs to delete:&quot;</span><span class="p">,</span> <span class="n">images_to_delete</span><span class="p">)</span>
+</span></code></pre></div></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The <code>_outlier_series_to_delete</code> function plays a crucial role in maintaining the integrity of cell morphology datasets by removing unreliable data points.</li>
+<li>It's important to set appropriate thresholds for both site and compound deletion to ensure accurate data analysis.</li>
+<li>This function is typically used in more advanced stages of data processing where precise outlier removal can significantly impact the quality of the analysis.</li>
+</ul>
+</div>
+<h3 id="get_comp_outlier_info"><code>get_comp_outlier_info()</code></h3>
+<p>This function computes outlier information for a given DataFrame that contains flagged data. It is particularly useful in the analysis of cell morphology data where identifying and quantifying outliers is crucial.</p>
+<h4 id="syntax-source_14">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/3a4500aef3a2c0059379849bf43f6e6af396cf72/pharmbio/dataset/cell_morphology.py#L442">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">def</span> <span class="nf">get_comp_outlier_info</span><span class="p">(</span><span class="n">flagged_df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_14">Parameters</h4>
+<ul>
+<li><code>flagged_df</code> (<code>polars.DataFrame</code>): A DataFrame containing flagged data. The data should include columns for batch identification and outlier flags.</li>
+</ul>
+<h4 id="returns_13">Returns</h4>
+<ul>
+<li>A <code>polars.DataFrame</code>: This DataFrame includes the following columns:<ul>
+<li><code>batch_id</code>: Identifier for each batch.</li>
+<li><code>outlier_img_num</code>: The number of outlier images per compound.</li>
+<li><code>total_img_num</code>: The total number of images per compound.</li>
+<li><code>lost_data_percentage</code>: The percentage of data considered as lost due to outliers.</li>
+</ul>
+</li>
+</ul>
+<p>The returned DataFrame is sorted in descending order based on the number of outlier images.</p>
+<h4 id="examples_14">Examples</h4>
+<p>To calculate the outlier information for a given DataFrame:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">flagged_df</span> <span class="o">=</span> <span class="c1"># Assume this is a pre-existing DataFrame with flagged data</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="n">outlier_info_df</span> <span class="o">=</span> <span class="n">get_comp_outlier_info</span><span class="p">(</span><span class="n">flagged_df</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The <code>get_comp_outlier_info</code> function is essential for understanding the distribution and impact of outliers in your data.</li>
+<li>It helps in the decision-making process regarding data cleaning and preprocessing, especially in large datasets with numerous compounds.</li>
+<li>Sorting the DataFrame based on the number of outlier images provides a clear view of which compounds are most affected by outliers.</li>
+</ul>
+</div>
+<h3 id="get_cell_morphology_data"><code>get_cell_morphology_data()</code></h3>
+<p>Retrieves, processes, and aggregates cell morphology data from specified reference and flagged QC dataframes, utilizing user-defined parameters for detailed and nuanced analysis. This enhanced function now offers more flexibility in handling outlier data and custom aggregation methods, making it a central feature in the <code>pharmbio</code> package for cell morphology data management.</p>
+<h4 id="syntax-source_15">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/cell_morphology.py#L476C1-L703C6">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="k">def</span> <span class="nf">get_cell_morphology_data</span><span class="p">(</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>    <span class="n">cell_morphology_ref_df</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>    <span class="n">flagged_qc_df</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>    <span class="n">site_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>    <span class="n">compound_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>    <span class="n">aggregation_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>    <span class="n">aggregation_method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>    <span class="n">path_to_save</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a>    <span class="n">use_gpu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a>    <span class="n">save_plate_separately</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_15">Parameters</h4>
+<ul>
+<li><code>cell_morphology_ref_df</code> (Union[pl.DataFrame, pd.DataFrame]): The reference DataFrame containing cell morphology data.</li>
+<li><code>flagged_qc_df</code> (Union[pl.DataFrame, pd.DataFrame], optional): Quality control DataFrame with flagged outlier images. Defaults to <code>None</code>.</li>
+<li><code>site_threshold</code> (int, optional): Threshold for the number of flagged sites in a well, above which the whole well is considered for removal. Range: 1-9. Defaults to 6.</li>
+<li><code>compound_threshold</code> (float, optional): Threshold for the percentage of data loss at which a compound is considered for deletion. Range: 0-1. Defaults to 0.7.</li>
+<li><code>aggregation_level</code> (str, optional): Level at which data aggregation is performed. Options: "cell", "site", "well", "plate", "compound". Defaults to "cell".</li>
+<li><code>aggregation_method</code> (Dict[str, str], optional): Methods of aggregation for each level, such as "mean", "median", etc. Defaults to <code>None</code>.</li>
+<li><code>path_to_save</code> (str, optional): Path for saving the aggregated data. Defaults to "data".</li>
+<li><code>use_gpu</code> (bool, optional): Flag for using GPU acceleration. Defaults to <code>False</code>.</li>
+<li><code>save_plate_separately</code> (bool, optional): Indicates whether to save aggregated data for each plate separately. Defaults to <code>False</code>.</li>
+</ul>
+<h4 id="returns_14">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The aggregated cell morphology data as a DataFrame.</li>
+</ul>
+<h4 id="raises_1">Raises</h4>
+<ul>
+<li><code>EnvironmentError</code>: Raised when GPU acceleration is requested but not available.</li>
+<li><code>ValueError</code>: Raised for invalid <code>site_threshold</code> or <code>compound_threshold</code> values.</li>
+</ul>
+<h4 id="examples_15">Examples</h4>
+<p>To aggregate cell morphology data at the plate level, considering flagged QC data:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="n">cell_morphology_ref_df</span> <span class="o">=</span> <span class="n">get_cell_morphology_ref</span><span class="p">(</span><span class="s2">&quot;example_reference&quot;</span><span class="p">)</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="n">flagged_qc_df</span> <span class="o">=</span> <span class="c1"># Assume pre-existing DataFrame with flagged QC data</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="n">aggregated_df</span> <span class="o">=</span> <span class="n">get_cell_morphology_data</span><span class="p">(</span>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>    <span class="n">cell_morphology_ref_df</span><span class="p">,</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>    <span class="n">flagged_qc_df</span><span class="p">,</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>    <span class="n">site_threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>    <span class="n">compound_threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>    <span class="n">aggregation_level</span><span class="o">=</span><span class="s1">&#39;plate&#39;</span>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="p">)</span>
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="n">display</span><span class="p">(</span><span class="n">aggregated_df</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function can optionally incorporates outlier handling based on flagged QC data, enhancing its robustness and reliability in processing complex cell morphology datasets.</li>
+<li>It offers flexible aggregation options at multiple levels, allowing for tailored analysis suited to specific experimental needs.</li>
+<li>GPU acceleration, if available, can significantly speed up data processing, especially for large datasets.</li>
+<li>The function takes a holistic approach to data aggregation, covering various steps such as data cleaning, joining, column reordering, and merging with additional plate information.</li>
+<li>The final output is a comprehensive and highly customizable DataFrame, enabling in-depth analysis of cell morphology data.</li>
+</ul>
+</div>
+<h2 id="pharmbiodatasetimage_quality"><code>pharmbio.dataset.image_quality</code></h2>
+<p>This module in the <code>pharmbio</code> package is dedicated to handling and querying image quality data.</p>
+<h3 id="_get_image_quality_reference_df"><code>_get_image_quality_reference_df()</code></h3>
+<p>Retrieves an image quality reference dataframe along with an associated data dictionary from the database for a given experiment. This function is essential for obtaining image quality metadata and plate barcodes pertinent to a specific experiment, providing a foundation for image quality analysis.</p>
+<h4 id="syntax-source_16">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L23">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="k">def</span> <span class="nf">_get_image_quality_reference_df</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span></code></pre></div>
+<h4 id="parameters_16">Parameters</h4>
+<ul>
+<li><code>experiment_name</code> (str): The name of the experiment for which image quality data is to be retrieved. This parameter is used to filter and fetch relevant data from the database.</li>
+</ul>
+<h4 id="returns_15">Returns</h4>
+<ul>
+<li><code>image_quality_reference_df</code> (pl.DataFrame): A dataframe containing image quality metadata specific to the experiment. This dataframe includes various metrics and information relevant to assessing the quality of images.</li>
+<li><code>data_dict</code> (dict): A dictionary mapping experiment names to lists of plate barcodes. This dictionary provides a quick reference to the plates associated with each experiment, facilitating further data processing or analysis.</li>
+</ul>
+<h4 id="examples_16">Examples</h4>
+<p>To retrieve image quality data for a specific experiment:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">experiment_name</span> <span class="o">=</span> <span class="s2">&quot;example_experiment&quot;</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="n">image_quality_ref_df</span><span class="p">,</span> <span class="n">plate_barcodes_dict</span> <span class="o">=</span> <span class="n">_get_image_quality_reference_df</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">)</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="c1"># image_quality_ref_df contains image quality metadata</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="c1"># plate_barcodes_dict maps experiment names to plate barcodes</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function constructs an SQL query using the provided <code>experiment_name</code>, the database schema, and the image quality metadata type (<code>IMAGE_QUALITY_METADATA_TYPE</code>).</li>
+<li>The resulting <code>image_quality_reference_df</code> contains detailed metadata for each image in the experiment, including various quality metrics and identifiers.</li>
+<li>The <code>data_dict</code> is created by grouping the DataFrame by the experiment name and aggregating plate barcodes. This dictionary is useful for quickly referencing which plates are associated with each experiment.</li>
+</ul>
+</div>
+<h3 id="_logging_information_image_quality_ref"><code>_logging_information_image_quality_ref()</code></h3>
+<p>Logs detailed information about a given image quality reference dataframe, data dictionary, and experiment name. This function is primarily used for logging and debugging purposes, providing insights into the data retrieved and any anomalies or patterns observed.</p>
+<h4 id="syntax-source_17">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L55">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="k">def</span> <span class="nf">_logging_information_image_quality_ref</span><span class="p">(</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>    <span class="n">image_quality_reference_df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>    <span class="n">image_quality_data_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>    <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a>    <span class="n">unique_project_count</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="p">):</span>
+</span></code></pre></div>
+<h4 id="parameters_17">Parameters</h4>
+<ul>
+<li><code>image_quality_reference_df</code> (pl.DataFrame): A dataframe containing image quality metadata.</li>
+<li><code>image_quality_data_dict</code> (Dict): A dictionary mapping experiment names to lists of plate barcodes.</li>
+<li><code>experiment_name</code> (str): The name of the experiment being queried.</li>
+<li><code>unique_project_count</code> (int): The number of unique studies found for the given experiment.</li>
+</ul>
+<h4 id="functionality">Functionality</h4>
+<ul>
+<li>The function logs the number of studies found for the specified experiment name.</li>
+<li>It logs the details of the data dictionary, mapping experiments to plate barcodes.</li>
+<li>The function also identifies and logs any replicated analyses found in the dataframe, alerting to potential duplicates or redundancies in the data.</li>
+</ul>
+<h4 id="examples_17">Examples</h4>
+<p>The function is used internally for logging purposes. For example:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="n">_logging_information_image_quality_ref</span><span class="p">(</span><span class="n">image_quality_ref_df</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">,</span> <span class="s2">&quot;Experiment_X&quot;</span><span class="p">,</span> <span class="n">unique_project_count</span><span class="p">)</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="c1"># This will log information, including the number of studies found and details about plate barcodes.</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function begins by constructing a message based on the number of unique studies found for the experiment, providing a quick overview of the query results.  It then iterates through the <code>image_quality_data_dict</code>, logging the experiment names and corresponding lists of plate barcodes. This provides clarity on the scope and range of the data retrieved.</li>
+<li>The function checks for replicated analyses within the dataframe. If duplicates are detected, it logs a warning with details about the replicated plates and their analysis IDs, which is crucial for data integrity checks.</li>
+<li>In the absence of replicated analyses, a log message confirms that no duplicates were found, ensuring data uniqueness and reliability.</li>
+<li>This logging function plays a critical role in data validation and error tracking, making it an essential tool for quality control and debugging in the data processing pipeline.</li>
+<li>By providing detailed logs, it aids in diagnosing issues with the data or the querying process, thereby facilitating efficient troubleshooting and ensuring the accuracy of the image quality analysis.</li>
+</ul>
+</div>
+<h3 id="get_image_quality_ref"><code>get_image_quality_ref()</code></h3>
+<p>Retrieves image quality reference data from the database based on the specified experiment name and optional filters. This function enables the selection and refinement of image quality data for specific experimental conditions, with capabilities to handle data replications and apply custom filters.</p>
+<h4 id="syntax-source_18">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L112">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="k">def</span> <span class="nf">get_image_quality_ref</span><span class="p">(</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>    <span class="n">drop_replication</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;Auto&quot;</span><span class="p">,</span>
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>    <span class="n">keep_replication</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>    <span class="nb">filter</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_18">Parameters</h4>
+<ul>
+<li><code>name</code> (str): The name of the experiment for which to retrieve image quality reference data.</li>
+<li><code>drop_replication</code> (Union[str, List[int]], optional): Specifies which replications to drop. Can be set to "Auto" (to keep the latest experiment), "None", or a list of <code>analysis_id</code> values. Defaults to "Auto".</li>
+<li><code>keep_replication</code> (Union[str, List[int]], optional): Specifies which replications to keep. Can be "None" or a list of <code>analysis_id</code> values. Defaults to "None".</li>
+<li><code>filter</code> (dict, optional): A dictionary of filters to apply to the data. Defaults to None.</li>
+</ul>
+<h4 id="returns_16">Returns</h4>
+<ul>
+<li><code>polars.DataFrame</code>: A DataFrame containing the filtered image quality reference data.</li>
+</ul>
+<h4 id="examples_18">Examples</h4>
+<p>Retrieve specific image quality data with custom replication handling and filters:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;example&quot;</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="n">drop_replication</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="n">keep_replication</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;column1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;value1&quot;</span><span class="p">,</span> <span class="s2">&quot;value2&quot;</span><span class="p">],</span> <span class="s2">&quot;column2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;value3&quot;</span><span class="p">]}</span>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="n">result</span> <span class="o">=</span> <span class="n">get_image_quality_ref</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">drop_replication</span><span class="p">,</span> <span class="n">keep_replication</span><span class="p">,</span> <span class="nb">filter</span><span class="p">)</span>
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="c1"># `result` is a DataFrame with the specified image quality data</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function initially retrieves image quality reference data using <code>_get_image_quality_reference_df</code>.</li>
+<li>It logs information about the data retrieved, including the number of unique studies found and details of plate barcodes.</li>
+<li>Based on <code>drop_replication</code> and <code>keep_replication</code> parameters, the function processes the DataFrame to retain or exclude specific replications.</li>
+<li>If filters are provided, it applies them to the DataFrame, allowing for refined data retrieval based on specific conditions.</li>
+<li>This flexibility in handling replications and applying filters makes the function highly adaptable for various scenarios to select the experiments.</li>
+<li>The function's ability to sort and uniquely identify data based on experimental needs ensures that users receive the most relevant and accurate image quality data for their specific queries.</li>
+</ul>
+</div>
+<h3 id="get_image_quality_data"><code>get_image_quality_data()</code></h3>
+<p>Retrieves and processes image quality data based on provided filtered information. This function serves as the main workflow for extracting, processing, and merging image quality data, allowing for various handling options based on user requirements.</p>
+<h4 id="syntax-source_19">Syntax <a href="https://github.com/pharmbio/pharmbio_package/blob/aff7659f9ff41aec655f0f57e70217a1ac9e18d7/pharmbio/dataset/image_quality.py#L193">[source]</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="k">def</span> <span class="nf">get_image_quality_data</span><span class="p">(</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>    <span class="n">filtered_image_quality_info</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>    <span class="n">force_merging_columns</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span></code></pre></div>
+<h4 id="parameters_19">Parameters</h4>
+<ul>
+<li><code>filtered_image_quality_info</code> (pl.DataFrame): The filtered image quality information, typically obtained from the <code>get_image_quality_ref</code> function.</li>
+<li><code>force_merging_columns</code> (Union[bool, str], optional): Specifies the method for merging columns. If set to <code>"keep"</code>, all columns are kept and missing values are filled with null. If <code>"drop"</code>, only matching columns are kept during horizontal merge. If <code>False</code>, the function returns <code>None</code>. Defaults to <code>False</code>.</li>
+</ul>
+<h4 id="returns_17">Returns</h4>
+<ul>
+<li><code>pl.DataFrame</code>: The concatenated and processed image quality data.</li>
+</ul>
+<h4 id="examples_19">Examples</h4>
+<p>Retrieve and process image quality data with specific merging preferences:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="n">filtered_image_quality_ref</span> <span class="o">=</span> <span class="n">get_image_quality_ref</span><span class="p">(</span><span class="s2">&quot;experiment_name&quot;</span><span class="p">,</span> <span class="n">drop_replication</span><span class="o">=</span><span class="s2">&quot;Auto&quot;</span><span class="p">)</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a><span class="n">force_merging_columns</span> <span class="o">=</span> <span class="s2">&quot;keep&quot;</span>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">get_image_quality_data</span><span class="p">(</span><span class="n">filtered_image_quality_ref</span><span class="p">,</span> <span class="n">force_merging_columns</span><span class="p">)</span>
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a><span class="c1"># `result` is a DataFrame with processed image quality data</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The function reads and processes files based on the information in <code>filtered_image_quality_info</code>, handling different file naming schemes and extensions.</li>
+<li>It casts numerical columns to appropriate data types (e.g., Float64 to Float32) for consistency and efficiency.</li>
+<li>The merging behavior is controlled by <code>force_merging_columns</code>, allowing for flexibility in how dataframes with different shape are combined.</li>
+<li>It logs successful imports and warnings for missing files, providing transparency in the data processing workflow.</li>
+<li>If <code>force_merging_columns</code> is set to "keep", the function merges the dataframes diagonally, ensuring that all columns are retained. In case of "drop", it keeps only the columns common across all dataframes.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../database/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Database">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Database
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../visualization/" class="md-footer__link md-footer__link--next" aria-label="Next: Visualization">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Visualization
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 - Pharmaceutical Bioinformatics Research Group, Uppsala University, Sweden
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/pharmbio/pharmbio_package" target="_blank" rel="noopener" title="Pharmbio" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.tabs.sticky", "toc.integrate", "navigation.footer", "content.action.edit", "content.tooltips", "content.code.copy", "content.code.select", "content.code.annotate", "announce.dismiss", "content.action.view", "navigation.indexes", "navigation.sections", "navigation.top", "navigation.tracking", "search.share", "toc.follow"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.c18c5fb9.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
