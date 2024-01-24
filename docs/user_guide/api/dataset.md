@@ -14,9 +14,7 @@ def get_projects_list(lookup: str = None) -> list:
 
 #### Parameters
 
-- `lookup` (str, optional): A string to filter the project list. If provided, the function returns
-
- only those projects that contain the `lookup` string in their names. The search is case-insensitive and the `lookup` string can match any part of a project name. Defaults to `None`, which returns all project names.
+- `lookup` (str, optional): A string to filter the project list. If provided, the function returns only those projects that contain the `lookup` string in their names. The search is case-insensitive and the `lookup` string can match any part of a project name. Defaults to `None`, which returns all project names.
 
 #### Returns
 
